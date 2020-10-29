@@ -1,0 +1,29 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 10-28-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   10-27-2020   shubhranshu   Initial Version
+-->
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <body style="background-color: #364150!important;background-image: url('https://prod-eduvanz-bucket.s3.ap-south-1.amazonaws.com/eduvanz-portal/assets/img/new-dark-bg2.png')">
+    <div id="lightning"></div>
+    <!-- https://eskipaper.com/images/cube-wallpaper-2.jpg -->
+    <script>
+        $Lightning.use("c:StoreFrontApp" , function(){
+            $Lightning.createComponent("c:storeFrontLoginComponent" ,{
+                greeting : "LWC test inside Vf page"
+            },
+            "lightning",
+            function (cmp) {
+                console.log('component created successfully ...');
+                
+            });
+        });
+    </script>
+    </body>
+</apex:page>

@@ -1,0 +1,29 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 10-29-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   10-27-2020   shubhranshu   Initial Version
+-->
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <body>
+    <div id="lightning"></div>
+    <!-- https://eskipaper.com/images/cube-wallpaper-2.jpg -->
+    <script>
+        $Lightning.use("c:StoreFrontMasterApp" , function(){
+            $Lightning.createComponent("c:storeFrontMasterComponent" ,{
+                greeting : "LWC test inside Vf page"
+            },
+            "lightning",
+            function (cmp) {
+                console.log('component created successfully ...');
+                
+            });
+        });
+    </script>
+    </body>
+</apex:page>
