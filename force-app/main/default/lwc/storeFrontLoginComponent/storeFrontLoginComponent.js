@@ -84,14 +84,7 @@ export default class StoreFrontLoginComponent extends LightningElement {
             .then(result => {
                 this.message = result;
                 this.error = undefined;
-                if(this.message === 'success'){
-                    this.showHtmlMessage(
-                        'Success!',
-                        'User Found',
-                        'success'
-                    );
-                    window.location.replace("http://www.google.com");
-                }else if(this.message === 'error'){
+                if(this.message === 'error'){
                     this.showHtmlMessage(
                         'Error!',
                         'User not found',
@@ -103,6 +96,8 @@ export default class StoreFrontLoginComponent extends LightningElement {
                         this.message,
                         'warning'
                     );
+                }else{
+                    window.location.replace("/StoreFront/StoreFrontHome?id="+this.message);
                 }
                 console.log("result", this.message);
                 // window.location.reload();

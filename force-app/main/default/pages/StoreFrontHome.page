@@ -12,12 +12,23 @@
     <apex:includeLightning />
     <body>
     <div id="lightning"></div>
-    <!-- https://eskipaper.com/images/cube-wallpaper-2.jpg -->
     <script>
+        function getQueryParameters() {
+            let params = {};
+            let search = location.search.substring(1);
+            if (search) {
+                params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                    return key === "" ? value : decodeURIComponent(value)
+                });
+            }
+            return params;
+        }
+
+        var params = getQueryParameters();
+        console.log('params ' + JSON.stringify(params));
+
         $Lightning.use("c:StoreFrontMasterApp" , function(){
-            $Lightning.createComponent("c:storeFrontMasterComponent" ,{
-                greeting : "LWC test inside Vf page"
-            },
+            $Lightning.createComponent("c:storeFrontMasterComponent" ,{ parameters: params },
             "lightning",
             function (cmp) {
                 console.log('component created successfully ...');

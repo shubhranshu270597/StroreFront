@@ -9,7 +9,25 @@
   1.0   10-29-2020   shubhranshu   Initial Version
 -->
 <template>
-    <div class="slds-global-header__item slds-card">
-        <div class="slds-global-header__logo"></div>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-large-size_12-of-12">
+            <header class="slds-global-header_container">
+                <div class="slds-global-header slds-grid slds-grid_align-spread slds-var-p-horizontal_large headerPage">
+                    <div class="slds-global-header__item">
+                        <div class="slds-global-header__logo"></div>
+                    </div>
+                    <div class="slds-global-header__item">
+                        <div class="slds-text-heading_medium"></div>
+                        <!-- <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="{!v.tpConfig.Trip_Title__c}">
+                                <span>{!v.tpConfig.Trip_Title__c}</span>
+                            </a>
+                            <lightning:button variant="base" iconName="utility:power" class="slds-var-m-left_x-small" onclick="{!c.SignOut}">
+                            </lightning:button>
+                        </h2> -->
+                    </div>
+                </div>
+            </header>
+        </div>
     </div>
 </template>

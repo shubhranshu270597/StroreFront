@@ -65,7 +65,7 @@ public without sharing class StoreFrontLoginController {
             List<Account> lst = [SELECT Id,Name,User_Name__c,Password__c,Country__c from Account WHERE User_Name__c=:username and Password__c =:password LIMIT 1];
             System.debug('lst '+lst);
             if(lst.size() >0){
-                result = 'success';
+                result = lst[0].Id;
             }else{
                 result = 'error';
             }
