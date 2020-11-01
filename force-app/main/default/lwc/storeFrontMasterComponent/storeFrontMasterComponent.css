@@ -6,3 +6,15 @@
 .headerPage{
     height: 5.0rem;
 }
+
+.paddingfromtop{
+    padding-top: 80px;
+}
+
+.paddingfromright{
+    padding-right: 150px;
+}
+
+.img-height {
+    height: 100% !important;
+}

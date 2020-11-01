@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 10-29-2020
+ * @last modified on  : 10-31-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -15,8 +15,8 @@ public without sharing class StoreFrontLoginController {
         System.debug('account '+account);
         Map<String,String> mapofPriceBookIds = new Map<String,String>();
         for(Pricebook2 pb:[SELECT IsActive ,Description, IsStandard, Id, Name, SystemModstamp FROM Pricebook2 WHERE IsActive=True]){
-            if(pb.NAME.contains('Germany')){
-                mapofPriceBookIds.put('Germany',pb.Id);
+            if(pb.NAME.contains('Netherlands')){
+                mapofPriceBookIds.put('Netherlands',pb.Id);
             }
             if(pb.NAME.contains('Indian')){
                 mapofPriceBookIds.put('India',pb.Id);
@@ -40,8 +40,8 @@ public without sharing class StoreFrontLoginController {
                 contract.BillingPostalCode = account.ShippingPostalCode;
                 contract.StartDate = date.today();
                 contract.ContractTerm = 12;
-                if(account.ShippingCountry == 'Germany'){
-                    contract.Pricebook2Id = mapofPriceBookIds.get('Germany');
+                if(account.ShippingCountry == 'Netherlands'){
+                    contract.Pricebook2Id = mapofPriceBookIds.get('Netherlands');
                 }else if(account.ShippingCountry == 'India'){
                     contract.Pricebook2Id = mapofPriceBookIds.get('India');
                 }else if(account.ShippingCountry == 'United State'){

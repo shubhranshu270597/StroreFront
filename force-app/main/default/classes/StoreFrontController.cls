@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 10-29-2020
+ * @last modified on  : 10-31-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -30,6 +30,59 @@ public without sharing class StoreFrontController {
                 System.debug('Exception '+e.getMessage());
             }   
         return account;
+    }
+
+    @AuraEnabled(Cacheable = true)  
+    public static List<PricebookEntry> getProductsData(String PriceBookName) {
+    
+        List<PricebookEntry> entries = new List<PricebookEntry>();
+        if(String.isNotBlank(PriceBookName)){
+            entries = [Select Id,PriceBook2.Name,Product2Id,Product2.Name,Product2.ProductCode,Product2.Price_Type__c,
+                        Product2.Product_Quantity__c,UnitPrice From PricebookEntry
+                        Where PriceBook2.Name = :PriceBookName
+                        and IsActive = true];
+        }
+
+        return entries;
+    }
+
+
+    @AuraEnabled
+    public static String addOrdersAndChecout(String accountId,List<String> productsName){
+        String result = '';
+        System.debug('accountId -->'+accountId+ 'productsName '+productsName);
+        String query = getQueryAllFieldSql('Contract','AccountId=:accountId LIMIT 1','Account.Name');
+        System.debug('query-->'+query);
+        List<Contract> lstcontr = (List<Contract>) DataBase.query(query);
+        System.debug('lstcontr-->'+lstcontr);
+        List<Order> lstorder = new List<Order>();
+        if(lstcontr.size() > 0){
+            for(String str:productsName){
+                for(Contract contr:lstcontr){
+                    Order order = new Order();
+                    order.Order_Name__c = str;
+                    order.AccountId = accountId;
+                    order.ContractId = contr.Id;
+                    order.EffectiveDate	= Date.today();
+                    order.ShippingStreet = contr.BillingStreet;
+                    order.ShippingCity = contr.BillingCity;
+                    order.ShippingState	= contr.BillingState;
+                    order.ShippingPostalCode = contr.BillingPostalCode;
+                    order.ShippingCountry = contr.BillingCountry;
+                    order.Status = 'Draft';
+                    lstorder.add(order);
+                }
+            }
+
+            try {
+                insert lstorder;
+                result='success';
+            } catch (DMLException e) {
+                System.debug('error '+e.getMessage());
+                result = e.getMessage();
+            }
+        }
+        return result;
     }
 
     @AuraEnabled

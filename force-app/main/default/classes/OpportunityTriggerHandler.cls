@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 10-27-2020
+ * @last modified on  : 10-31-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -44,7 +44,7 @@ public without sharing class OpportunityTriggerHandler {
         }
         System.debug('setOfOppIds '+setOfOppIds);
         if(setOfOppIds.size()>0){
-            List<Opportunity> lst = [SELECT Id,Name,PriceBook_Id__c,Order_Name__c,AccountId,Order__c from Opportunity Where Id in:setOfOppIds ];
+            List<Opportunity> lst = [SELECT Id,Name,Product_Quantity__c,PriceBook_Id__c,Order_Name__c,AccountId,Order__c from Opportunity Where Id in:setOfOppIds ];
             List<PriceBookEntry> lstpbe = [SELECT Id,UnitPrice,UseStandardPrice,Product2.Id, Product2.Name
                                                 FROM PriceBookEntry 
                                                 WHERE Pricebook2Id IN :setOfpriceBookIds];
@@ -64,7 +64,12 @@ public without sharing class OpportunityTriggerHandler {
                             oppLineItem.OpportunityId = opp.Id;
                             oppLineItem.PricebookEntryId = pbe.Id;
                             oppLineItem.UnitPrice = pbe.UnitPrice;
-                            oppLineItem.Quantity = 1;
+                            if(opp.Product_Quantity__c > 0){
+                                oppLineItem.Quantity = opp.Product_Quantity__c;
+                            }else{
+                                oppLineItem.Quantity = 1;
+                            }
+                            
                             oppLineItemlst.add(oppLineItem);
                         }
                         if(opp.Order_Name__c != pbe.Product2.Name && !mapOfexistingOppLineItem.isEmpty()){

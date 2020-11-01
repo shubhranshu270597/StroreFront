@@ -18,7 +18,7 @@ export default class StoreFrontLoginComponent extends LightningElement {
         return [
             { label: 'United States', value: 'United States' },
             { label: 'India', value: 'India' },
-            { label: 'Germany', value: 'Germany' },
+            { label: 'Netherlands', value: 'Netherlands' },
         ];
     }
     // Form input handle change event
