@@ -2,7 +2,7 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 10-31-2020
+  @last modified on  : 11-02-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="slds-grid slds-wrap paddingfromtop">
-        <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-3 slds-size_1-of-1">
+        <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-3 slds-size_1-of-1 paddingfromright">
             <!-- <div class="slds-text-heading_medium">Quick Actions</div> -->
             <div class="slds-nav-vertical__section">
                 <div>
@@ -43,200 +43,255 @@
                     <span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-recent" value="unique-id-02-recent" name="unique-id-compact" checked="" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-recent">
-                        <span class="slds-nav-vertical_radio-faux">Recent</span>
+                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="Home">Home</a></span>
                       </label>
                     </span>
                     <span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-created-by-me" value="unique-id-02-created-by-me" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-created-by-me">
-                        <span class="slds-nav-vertical_radio-faux">Created by Me</span>
+                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="MyOrders">My Orders</a></span>
                       </label>
                     </span>
                     <span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-private-reports" value="unique-id-02-private-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-private-reports">
-                        <span class="slds-nav-vertical_radio-faux">Private Reports</span>
+                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="Complaints">Complaints</a></span>
                       </label>
                     </span>
                     <span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-public-reports" value="unique-id-02-public-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-public-reports">
-                        <span class="slds-nav-vertical_radio-faux">Public Reports</span>
+                        <span class="slds-nav-vertical_radio-faux">Warranty Support</span>
                       </label>
                     </span>
                     <span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-all-reports" value="unique-id-02-all-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-all-reports">
-                        <span class="slds-nav-vertical_radio-faux">All Reports</span>
+                        <span class="slds-nav-vertical_radio-faux">Referrals</span>
                       </label>
                     </span>
                   </fieldset>
                 </div>
             </div>
         </div>
-        <div class="slds-col slds-large-size_2-of-3 slds-medium-size_2-of-3 slds-size_1-of-1">
-            <div class="slds-text-heading_medium">Products</div>
-            <div class="slds-grid slds-wrap">
-                <template for:each={products} for:item="prod">
-                    <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small"
-                        key={prod.Id}>
-                        <a href="javascript:void(0);" title={prod.Product2.Name} data-value={prod.Id}
-                            onclick={handleClick}>
-                            <article class="slds-card slds-card_boundary">
-                                <div class="slds-card__header slds-grid">
-                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                        <div class="slds-media__figure">
-                                            <span class="slds-avatar">
-                                                <img alt={prod.Product2.Name} src="https://eskipaper.com/images/cube-wallpaper-2.jpg"
-                                                    title={prod.Product2.Name} class="img-height" />
-                                            </span>
-                                        </div>
-                                        <div class="slds-media__body">
-                                            <h2 class="slds-card__header-title">
-                                                <span class="slds-card__header-link slds-truncate">
-                                                        Name :- {prod.Product2.Name}<br />
-                                                        Code :- {prod.Product2.ProductCode}<br />
-                                                        Type :- {prod.Product2.Price_Type__c}<br />
-                                                        Price:- {prod.UnitPrice}
+        <template if:true={dashboardTabs.showHome}>
+            <div class="slds-col slds-large-size_2-of-3 slds-medium-size_2-of-3 slds-size_1-of-1 paddingfromright">
+                <div class="slds-text-heading_medium slds-text-align_center">CNX StoreFront Products</div>
+                <br />
+                <div class="slds-grid slds-wrap">
+                    <template for:each={products} for:item="prod">
+                        <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small"
+                            key={prod.Id}>
+                            <a href="javascript:void(0);" title={prod.Product2.Name} data-value={prod.Id}
+                                onclick={handleClick}>
+                                <article class="slds-card slds-card_boundary">
+                                    <div class="slds-card__header slds-grid">
+                                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                            <div class="slds-media__figure">
+                                                <span class="slds-avatar">
+                                                    <img alt={prod.Product2.Name} src="https://eskipaper.com/images/cube-wallpaper-2.jpg"
+                                                        title={prod.Product2.Name} class="img-height" />
                                                 </span>
-                                            </h2>
-                                        </div>
-                                        <template if:true={prod.selected}>
-                                            <div class="slds-no-flex">
-                                                <lightning-icon icon-name="standard:task2" alternative-text="task2"
-                                                    size="x-small"></lightning-icon>
                                             </div>
-                                        </template>
-                                    </header>
-                                </div>
-                                <div class="slds-card__body slds-card__body_inner">
-                                   Quantity :- {prod.Product2.Product_Quantity__c}
-                                </div>
-                                <!-- <footer class="slds-card__footer">
-                                    <span class="slds-assistive-text">Price</span>
-                                </footer> -->
-                            </article>
-                        </a>
-                    </div>
-                </template>
-            </div>
-
-            <template if:true={calculation.show}>
-                <div class="slds-show_medium">
-                    <div class="slds-text-heading_medium slds-var-p-top_small">Summary</div>
-                    <table
-                        class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-var-m-top_x-small"
-                        style="border: 1px solid rgb(217, 219, 221);">
-                        <thead>
-                            <tr class="slds-line-height_reset">
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="AEP Profiles">Products</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Quantity">Quantity</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Product Code">Product Code</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Type">Type</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Unitt Price">Unit Price</div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template for:each={products} for:item="prod">
-                                <template key={prod.Id} if:true={prod.selected}>
-                                    <tr class="slds-hint-parent" key={prod.Id}>
-                                        <td data-label={prod.Product2.Name}>
-                                            <div class="slds-truncate" title={prod.Product2.Name}>
-                                                {prod.Product2.Name}
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <span class="slds-card__header-link slds-truncate">
+                                                            Name :- {prod.Product2.Name}<br />
+                                                            Code :- {prod.Product2.ProductCode}<br />
+                                                            Type :- {prod.Product2.Price_Type__c}<br />
+                                                        <template if:true={indianFlag}>
+                                                            Price:- ₹ {prod.UnitPrice}
+                                                        </template>
+                                                        <template if:true={usFlag}>
+                                                            Price:- $ {prod.UnitPrice}
+                                                        </template>
+                                                        <template if:true={euroFlag}>
+                                                            Price:- € {prod.UnitPrice}
+                                                        </template>
+                                                    </span>
+                                                    
+                                                </h2>
                                             </div>
-                                        </td>
-                                        <!-- <td class="slds-cell-edit" role="gridcell">
-                                            <div class="slds-checkbox">
-                                                <lightning-combobox name="Quantity" value={prod.quantity}
-                                                    placeholder="Select Quanity" options={options}
-                                                    onchange={handleChange} data-key={prod.Id}></lightning-combobox>
-                                            </div>
-                                        </td> -->
-                                        <td data-label="Qunatity">
-                                            <div class="slds-truncate" title="Qunatity">
-                                                1
-                                            </div>
-                                        </td>
-                                        <td data-label={prod.Product2.ProductCode}>
-                                            <div class="slds-truncate" title={prod.Product2.ProductCode}>
-                                                {prod.Product2.ProductCode}
-                                            </div>
-                                        </td>
-                                        <td data-label={prod.Product2.Price_Type__c}>
-                                            <div class="slds-truncate" title={prod.Product2.Price_Type__c}>
-                                                {prod.Product2.Price_Type__c}
-                                            </div>
-                                        </td>
-                                        <td data-label={prod.UnitPrice}>
-                                            <div class="slds-truncate" title={prod.UnitPrice}>
-                                                {prod.UnitPrice}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </template>
-                        </tbody>
-                    </table>
-
-                    <table
-                        class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-var-m-top_x-small"
-                        style="border: 1px solid rgb(217, 219, 221);">
-                        <thead>
-                            <tr class="slds-line-height_reset">
-                                <th class="" scope="col" colspan="2">
-                                    <div class="slds-truncate" title="Quantity">Quantity</div>
-                                </th>
-                                <th class="" scope="col" colspan="2">
-                                    <div class="slds-truncate" title="Total Amount">Total Amount</div>
-                                </th>
-                            </tr>    
-                        </thead>
-                        <tbody>
-                            <tr class="slds-hint-parent">
-                                <td data-label="No of items in cart" colspan="2">
-                                    <div class="slds-truncate" title={calculation.noOfItems}>
-                                        {calculation.noOfItems}
+                                            <template if:true={prod.selected}>
+                                                <div class="slds-no-flex">
+                                                    <lightning-icon icon-name="standard:task2" alternative-text="task2"
+                                                        size="x-small"></lightning-icon>
+                                                </div>
+                                            </template>
+                                        </header>
                                     </div>
-                                </td>
-                                <td data-label="Total Amount" colspan="2">
-                                    <div class="slds-truncate" title={calculation.amount}>{calculation.amount}</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <div class="slds-card__body slds-card__body_inner">
+                                    Quantity :- {prod.Product2.Product_Quantity__c}
+                                    </div>
+                                    <!-- <footer class="slds-card__footer">
+                                        <span class="slds-assistive-text">Price</span>
+                                    </footer> -->
+                                </article>
+                            </a>
+                        </div>
+                    </template>
                 </div>
-                <div class="slds-grid slds-wrap slds-form-element slds-var-m-vertical_medium">
-                    <div class="slds-var-p-vertical_medium">
-                        <lightning-input type="checkbox" required="required" name="undertakingForCNXProducts"
-                            onchange={handleChange} checked={allowProceed}>
-                        </lightning-input>
+
+                <template if:true={calculation.show}>
+                    <div class="slds-show_medium">
+                        <div class="slds-text-heading_medium slds-var-p-top_small">Summary</div>
+                        <table
+                            class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-var-m-top_x-small"
+                            style="border: 1px solid rgb(217, 219, 221);">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="AEP Profiles">Products</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Quantity">Quantity</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Product Code">Product Code</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Type">Type</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Unitt Price">Unit Price</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={products} for:item="prod">
+                                    <template key={prod.Id} if:true={prod.selected}>
+                                        <tr class="slds-hint-parent" key={prod.Id}>
+                                            <td data-label={prod.Product2.Name}>
+                                                <div class="slds-truncate" title={prod.Product2.Name}>
+                                                    {prod.Product2.Name}
+                                                </div>
+                                            </td>
+                                            <!-- <td class="slds-cell-edit" role="gridcell">
+                                                <div class="slds-checkbox">
+                                                    <lightning-combobox name="Quantity" value={prod.quantity}
+                                                        placeholder="Select Quanity" options={options}
+                                                        onchange={handleChange} data-key={prod.Id}></lightning-combobox>
+                                                </div>
+                                            </td> -->
+                                            <td data-label="Qunatity">
+                                                <div class="slds-truncate" title="Qunatity">
+                                                    1
+                                                </div>
+                                            </td>
+                                            <td data-label={prod.Product2.ProductCode}>
+                                                <div class="slds-truncate" title={prod.Product2.ProductCode}>
+                                                    {prod.Product2.ProductCode}
+                                                </div>
+                                            </td>
+                                            <td data-label={prod.Product2.Price_Type__c}>
+                                                <div class="slds-truncate" title={prod.Product2.Price_Type__c}>
+                                                    {prod.Product2.Price_Type__c}
+                                                </div>
+                                            </td>
+                                            <template if:true={indianFlag}>
+                                                <td data-label={prod.UnitPrice}>
+                                                    <div class="slds-truncate" title={prod.UnitPrice}>
+                                                        ₹ {prod.UnitPrice}
+                                                    </div>
+                                                </td>
+                                            </template>
+                                            <template if:true={usFlag}>
+                                                <td data-label={prod.UnitPrice}>
+                                                    <div class="slds-truncate" title={prod.UnitPrice}>
+                                                        $ {prod.UnitPrice}
+                                                    </div>
+                                                </td>
+                                            </template>
+                                            <template if:true={euroFlag}>
+                                                <td data-label={prod.UnitPrice}>
+                                                    <div class="slds-truncate" title={prod.UnitPrice}>
+                                                        € {prod.UnitPrice}
+                                                    </div>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <table
+                            class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-var-m-top_x-small"
+                            style="border: 1px solid rgb(217, 219, 221);">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col" colspan="2">
+                                        <div class="slds-truncate" title="Quantity">Quantity</div>
+                                    </th>
+                                    <th class="" scope="col" colspan="2">
+                                        <div class="slds-truncate" title="Total Amount">Total Amount</div>
+                                    </th>
+                                </tr>    
+                            </thead>
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td data-label="No of items in cart" colspan="2">
+                                        <div class="slds-truncate" title={calculation.noOfItems}>
+                                            {calculation.noOfItems}
+                                        </div>
+                                    </td>
+                                    <td data-label="Total Amount" colspan="2">
+                                        <template if:true={indianFlag}>
+                                            <div class="slds-truncate" title={calculation.amount}>₹ {calculation.amount}</div>
+                                        </template>
+                                        <template if:true={usFlag}>
+                                            <div class="slds-truncate" title={calculation.amount}>$ {calculation.amount}</div>
+                                        </template>
+                                        <template if:true={euroFlag}>
+                                            <div class="slds-truncate" title={calculation.amount}>€ {calculation.amount}</div>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="slds-col slds-size_11-of-12">
-                        <p class="slds-var-p-vertical_small">
-                            I would like to order {calculation.noOfItems} no. of CNX StoreFront Products.
-                            I accept all rules and regulations and agree to pay of {calculation.amount}.
-                        </p>
-                    </div>
-                </div>
-                <template if:true={allowProceed}>
-                    <div class="slds-grid slds-wrap slds-form-element">
-                        <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-horizontal_x-small">
-                            <lightning-button variant="brand" label="CheckOut and Pay" title="CheckOut and Pay" 
-                              icon-name="utility:checkout" onclick={checkOutandInsertOrders} icon-position="right" class="slds-m-left_x-small"></lightning-button>
+                    <div class="slds-grid slds-wrap slds-form-element slds-var-m-vertical_medium">
+                        <div class="slds-var-p-vertical_medium">
+                            <lightning-input type="checkbox" required="required" name="undertakingForCNXProducts"
+                                onchange={handleChange} checked={allowProceed}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_11-of-12">
+                            <p class="slds-var-p-vertical_small">
+                                <template if:true={indianFlag}>
+                                    I would like to order {calculation.noOfItems} no. of CNX StoreFront Products.
+                                    I accept all rules and regulations and agree to pay of ₹ {calculation.amount}.
+                                </template>
+                                <template if:true={usFlag}>
+                                    I would like to order {calculation.noOfItems} no. of CNX StoreFront Products.
+                                    I accept all rules and regulations and agree to pay of $ {calculation.amount}.
+                                </template>
+                                <template if:true={euroFlag}>
+                                    I would like to order {calculation.noOfItems} no. of CNX StoreFront Products.
+                                    I accept all rules and regulations and agree to pay of € {calculation.amount}.
+                                </template>
+                                
+                            </p>
                         </div>
                     </div>
+                    <template if:true={allowProceed}>
+                        <div class="slds-grid slds-wrap slds-form-element">
+                            <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-horizontal_x-small">
+                                <lightning-button variant="brand" label="CheckOut and Pay" title="CheckOut and Pay" 
+                                icon-name="utility:checkout" onclick={checkOutandInsertOrders} icon-position="right" class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </div>
+                    </template>
                 </template>
-            </template>
-        </div>
+            </div>
+        </template>
+        
+        <template if:true={dashboardTabs.showMyOrders}>
+            <c-show-my-orders account-id={recordId}></c-show-my-orders>
+        </template>
+
+        <template if:true={dashboardTabs.showMyComplaints}>
+            <c-show-my-complaints account-id={recordId}></c-show-my-complaints>
+        </template>
     </div>
 </template>

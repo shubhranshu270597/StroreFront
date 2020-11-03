@@ -15,7 +15,20 @@ export default class StoreFrontMasterComponent extends LightningElement {
         amount : 0,
         show : false
     };
+
+    @track dashboardTabs ={
+        showHome: true,
+        showMyOrders: false,
+        showMyComplaints: false,
+        showMyWarrtiesProducts: false,
+        showMyReferral: false
+    }
     @track allowProceed = false;
+    @track indianFlag = false;
+    @track usFlag = false;
+    @track euroFlag = false;
+    @api message;
+    @api error;
     @track customer ={
         Name: '',Email_Id__c :'',MobilePhone__c : '',Country__c: '',ShippingStreet:'',
         ShippingCity:'',ShippingState:'',ShippingCountry:'',ShippingPostalCode:'',User_Name__c : '',Password__c : ''
@@ -46,10 +59,13 @@ export default class StoreFrontMasterComponent extends LightningElement {
             if(this.customer.Country__c){
                 if(this.customer.Country__c === 'India'){
                     this.pricebookname = 'Indian Price Book';
+                    this.indianFlag = true;
                 }else if(this.customer.Country__c === 'United States'){
                     this.pricebookname = 'United State Price Book';
+                    this.usFlag = true;
                 }else if(this.customer.Country__c === 'Netherlands'){
                     this.pricebookname = 'Netherlands Price Book';
+                    this.euroFlag = true;
                 } 
             }
             console.log(JSON.stringify(this.customer));
@@ -171,16 +187,50 @@ export default class StoreFrontMasterComponent extends LightningElement {
         addOrdersAndChecout({ accountId: this.recordId, productsName: prodList})
             .then((result) => {
                 if (result != null) {
-                    this.showHtmlMessage('Order added successfully.!', 'Order will deliver within 2-3 working days.' , 'success');
-                    console.log('result '+JSON.stringify(result));
+                    this.message = result;
+                    this.error = undefined;
+                    console.log("result", this.message);
+                    if(this.message.includes('error')){
+                        this.showHtmlMessage('Failed to checkout!',this.message,'error');
+                    }else {
+                        this.showHtmlMessage('Order added successfully.!', 'Order will deliver within 2-3 working days.' , 'success');
+                        window.location.reload();
+                    }
                 }
             })
             .catch((error) => {
-                this.showHtmlMessage('Error while updating the record!', 'error', 'error');
+                this.message = undefined;
+                this.error = error;
+                this.showHtmlMessage('Error while updating the record!', this.error, 'error');
                 console.log('error '+JSON.stringify(error));
             });
     }
 
+    handleDashboardTabs(event){
+        let value = event.currentTarget.dataset.value;
+        console.log('value '+value);
+        if(value === 'Home'){
+            this.dashboardTabs.showHome = true;
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = false;
+            
+        }else if(value === 'MyOrders'){
+            this.dashboardTabs.showMyOrders = true;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = false;
+        
+        }else if(value === 'Complaints'){
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = true;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = false;
+        }
+    }
     // To show Toast message
 	showHtmlMessage(title, message, variant) {
 		this.showPopup.title = title;

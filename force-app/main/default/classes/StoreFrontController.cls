@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 10-31-2020
+ * @last modified on  : 11-03-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -46,6 +46,49 @@ public without sharing class StoreFrontController {
         return entries;
     }
 
+    @AuraEnabled
+    public static List<Opportunity> getOpportunities(String recordId) {
+    
+        List<Opportunity> opplst = new List<Opportunity>();
+        if(String.isNotBlank(recordId)){
+            opplst = [Select Id,Name,AccountId,Type,LeadSource,Order__c,Order_Status__c,PriceBook_Id__c,Order_Name__c,Product_Quantity__c,User_Email__c,
+                        OrderNumber__c,DeliveryInstallationStatus__c,Probability,StageName,CloseDate,ExpectedRevenue,Amount from Opportunity Where AccountId =: recordId];
+        
+        }
+        return opplst;
+    }
+
+    @AuraEnabled
+    public static List<Case> getCases(String recordId) {
+    
+        List<Case> caselst = new List<Case>();
+        if(String.isNotBlank(recordId)){
+            caselst = [Select Id,CaseNumber,AccountId,Account.Name,Type,Reason,CreatedDate,ClosedDate,Product__c,PotentialLiability__c,Subject,Description,
+                       Status,Priority,ContactPhone,ContactEmail,Origin,EngineeringReqNumber__c,SLAViolation__c from Case Where AccountId =: recordId];
+        
+        }
+        return caselst;
+    }
+
+    @AuraEnabled
+    public static string saveComplaints(Case caseobj,String accountId){
+        String result ='';
+        if(String.isNotBlank(accountId) && caseobj != null){
+            try {
+                caseobj.AccountId = accountId;
+                caseobj.Status = 'New';
+                caseobj.Origin = 'Web';
+                insert caseobj;
+                result = 'success';
+
+            } catch (Exception e) {
+                throw new AuraHandledException(e.getMessage());
+            }
+        }else{
+            result = 'Account Id can not be blank';
+        }
+        return result;
+    }
 
     @AuraEnabled
     public static String addOrdersAndChecout(String accountId,List<String> productsName){
@@ -69,7 +112,7 @@ public without sharing class StoreFrontController {
                     order.ShippingState	= contr.BillingState;
                     order.ShippingPostalCode = contr.BillingPostalCode;
                     order.ShippingCountry = contr.BillingCountry;
-                    order.Status = 'Draft';
+                    order.Status = 'Active';
                     lstorder.add(order);
                 }
             }

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 10-31-2020
+ * @last modified on  : 11-01-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -37,7 +37,7 @@ public without sharing class OrderTriggerHandler {
         }
         System.debug('setOfOrderIds '+setOfOrderIds);
         if(setOfOrderIds.size()>0){
-            List<Order> lst = [SELECT Id,Name,ContractId,AccountId,Account.Name,Account.Email_Id__c,Order_Name__c,EffectiveDate,ShippingStreet,ShippingCity,ShippingState,
+            List<Order> lst = [SELECT Id,Name,OrderNumber,ContractId,AccountId,Account.Name,Account.Email_Id__c,Order_Name__c,EffectiveDate,ShippingStreet,ShippingCity,ShippingState,
                                 ShippingPostalCode,ShippingCountry from Order Where Id in:setOfOrderIds ];
             
             List<Opportunity> lstopp = new List<Opportunity>();
@@ -53,7 +53,7 @@ public without sharing class OrderTriggerHandler {
                     op.StageName = 'Prospecting';
                     op.DeliveryInstallationStatus__c = 'In Progress';
                     op.Order__c	= ord.Id;
-                    op.OrderNumber__c = ord.Name;
+                    op.OrderNumber__c = ord.OrderNumber;
                     op.Product_Quantity__c	= 1;
                     op.User_Email__c = ord.Account.Email_Id__c;
                     lstopp.add(op);
