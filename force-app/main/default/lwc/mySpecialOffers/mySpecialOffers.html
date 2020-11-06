@@ -1,0 +1,74 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 11-05-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   11-05-2020   shubhranshu   Initial Version
+-->
+<template>
+     <!-- Message Toast Starts here-->
+     <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+     <!-- Message Toast Ends here-->
+    <div class="slds-text-heading_medium slds-text-align_center">CNX StoreFront Product Bundles</div>
+    <br />
+    <div class="slds-grid slds-wrap">
+        <template for:each={products} for:item="prod">
+            <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small"
+                key={prod.Id}>
+                <a href="javascript:void(0);" title={prod.Name} data-value={prod.Id}
+                    onclick={handleClick}>
+                    <article class="slds-card slds-card_boundary">
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                    <span class="slds-avatar">
+                                        <img alt={prod.Name} src="https://eskipaper.com/images/cube-wallpaper-2.jpg"
+                                            title={prod.Name} class="img-height" />
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span class="slds-card__header-link slds-truncate">
+                                            <lightning-textarea name="products" readonly="readonly" value={prod.Products__c} label={prod.Name}></lightning-textarea>
+                                        </span>
+                                        
+                                    </h2>
+                                </div>
+                                <template if:true={prod.selected}>
+                                    <div class="slds-no-flex">
+                                        <lightning-icon icon-name="standard:task2" alternative-text="task2"
+                                            size="x-small"></lightning-icon>
+                                    </div>
+                                </template>
+                            </header>
+                        </div>
+                    </article>
+                </a>
+            </div>
+        </template>
+    </div>
+
+    <div class="slds-grid slds-wrap slds-form-element slds-var-m-vertical_medium">
+        <div class="slds-var-p-vertical_medium">
+            <lightning-input type="checkbox" required="required" name="undertakingForCNXProducts"
+                onchange={handleChange} checked={allowProceed}>
+            </lightning-input>
+        </div>
+        <div class="slds-col slds-size_11-of-12">
+            <p class="slds-var-p-vertical_small">
+                I accept all rules and regulations and i would like to order <b>{productName}</b> of CNX StoreFront Product Bundle.</p>
+        </div>
+    </div>
+
+    <template if:true={allowProceed}>
+        <div class="slds-grid slds-wrap slds-form-element">
+            <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-horizontal_x-small">
+                <lightning-button variant="brand" label="Claim my offers" title="Claim my offers" 
+                icon-name="utility:checkout" onclick={addProductBundle} icon-position="right" class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </div>
+    </template>
+</template>

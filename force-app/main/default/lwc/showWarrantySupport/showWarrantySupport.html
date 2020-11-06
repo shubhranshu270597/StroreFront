@@ -1,0 +1,86 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 11-03-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   11-03-2020   shubhranshu   Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+   <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+   <!-- Message Toast Ends here-->
+   <div class="slds-text-heading_medium slds-text-align_center">Warranty Product to claim</div>
+   <br />
+   <template if:true={productsFound}>
+        <div class="slds-grid slds-wrap slds-form-element">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Order number">Order number</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Order Name">Order Name</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Price">Price</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Quantity">Quantity</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Actions">Actions</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+            
+                <template for:each={products} for:item="prod">
+                    <tr class="slds-hint-parent" key={prod.Id}>
+                    <th data-label="Order Number" scope="row">
+                        <div class="slds-truncate" title="Order Number">
+                            <lightning-formatted-text value={prod.OrderNumber__c}></lightning-formatted-text>
+                        </div>
+                    </th>
+                    <td data-label="Order Name">
+                        <div class="slds-truncate" title="Order Name">
+                        <lightning-formatted-text value={prod.Order_Name__c}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    <td data-label="Price">
+                        <div class="slds-truncate" title="Price">
+                        <lightning-formatted-number value={prod.Amount}></lightning-formatted-number>
+                        </div>
+                    </td>
+                    <td data-label="Quantity">
+                        <div class="slds-truncate" title="Quantity">
+                        <lightning-formatted-number value={prod.Product_Quantity__c}></lightning-formatted-number>
+                        </div>
+                    </td>
+                    <td data-label="Add for Warranty Support">
+                        <div class="slds-truncate" title="Add for Warranty Support">
+                            <lightning-button icon-name="utility:warranty_term" class="slds-m-left_xx-small" variant="brand" label="Add for Warranty Support" title="Add for Warranty Support" data-label={prod.Id} onclick={addtoWarrantySupport}></lightning-button>
+                        </div>
+                    </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>    
+        </div> 
+   </template> 
+   <template if:false={productsFound}>
+        <article class="slds-card slds-card_boundary ">
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                    <div class="slds-text-color_weak">
+                        <h3 class="slds-text-heading_medium">Congratulations! All products are with warranty support .</h3>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </template>
+</template>

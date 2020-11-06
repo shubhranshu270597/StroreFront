@@ -1,93 +1,87 @@
 import { api, LightningElement, track } from 'lwc';
-import getCases from '@salesforce/apex/StoreFrontController.getCases';
-import saveComplaints from '@salesforce/apex/StoreFrontController.saveComplaints';
-export default class ShowMyComplaints extends LightningElement {
-
+import getReferrals from '@salesforce/apex/StoreFrontController.getReferrals';
+import saveReferral from '@salesforce/apex/StoreFrontController.saveReferral';
+export default class ShowMyReferrals extends LightningElement {
     @api accountId;
-    @track cases;
+    @api totalReferralPoints;
+    @track referrals;
     @track showPopup = { title: '', message: '', variant: '' };
     @api message;
     @api error;
-    @track casesFound = false;
-    @track objcase = {Subject: '', Priority: '', Description: ''}
+    @track referralFound = false;
+    @track objReferrals = {Account__c:'', Name__c: '', Email_Id__c: '', MobileNumber__c: ''}
 
     connectedCallback(){
         if(this.accountId){
-            this.getAllCases();
+            this.getAllReferrals();
         }
     }
 
-    get PriorityList(){
-        return [
-            { label: 'High', value: 'High' },
-            { label: 'Medium', value: 'Medium' },
-            { label: 'Low', value: 'Low' }
-        ];
-    }
-    getAllCases(){
-        getCases({ recordId: this.accountId})
+    getAllReferrals(){
+        getReferrals({ recordId: this.accountId})
             .then((result) => {
                 if (result != null) {
                     this.message = result;
                     if(Array.isArray(result) && result.length){
-                        this.casesFound = true;
+                        this.referralFound = true;
                     }else{
-                        this.casesFound = false;
+                        this.referralFound = false;
                     }
                     this.error = undefined;
                     console.log("result", this.message);
                     if(this.message.includes('error')){
-                        this.showHtmlMessage('Failed to get Cases!',this.message,'error');
+                        this.showHtmlMessage('Failed to get Referrals!',this.message,'error');
                     }else {
-                        this.cases= result;
+                        this.referrals= result;
                     }
                 }
             })
             .catch((error) => {
                 this.message = undefined;
                 this.error = error;
-                this.showHtmlMessage('Error while getting the cases!', this.error, 'error');
+                this.showHtmlMessage('Error while getting the Referrals!', this.error, 'error');
                 console.log('error '+JSON.stringify(error));
             });
     }
 
     handleName(event){
         let field = event.target.dataset.field;
-        if ({}.hasOwnProperty.call(this.objcase, field)) {
-			this.objcase[field] = event.detail.value;
+        if ({}.hasOwnProperty.call(this.objReferrals, field)) {
+			this.objReferrals[field] = event.detail.value;
 			// this.customValidation(field);
 		}
     }
 
-    saveComplaint(){
+    sendReferrals(){
         if (!this.formValidate()) {
 			return;
         }
 
-        console.log('cases '+JSON.stringify(this.objcase)+' account id '+this.accountId);
+        console.log('referrals '+JSON.stringify(this.objReferrals)+' account id '+this.accountId);
+        this.objReferrals.Account__c = this.accountId;
 
-        saveComplaints({ caseobj: this.objcase, accountId: this.accountId})
+        saveReferral({ referral: this.objReferrals, accountId: this.accountId})
             .then((result) => {
                 if (result != null) {
                     this.message = result;
                     this.error = undefined;
                     console.log("result", this.message);                    
                     if(this.message.includes('error')){
-                        this.showHtmlMessage('Failed to insert Cases!',this.message,'error');
+                        this.showHtmlMessage('Failed to send referrals !',this.message,'error');
                     }else {
-                        this.showHtmlMessage('Complaint has been raised.',this.message,'success');
-                        this.objcase.Subject = '';
-                        this.objcase.Priority = '';
-                        this.objcase.Description = '';
-                        
-                        this.getAllCases();
+                        this.showHtmlMessage('Referral has been sent.',this.message,'success');
+                        this.objReferrals.Name__c = '';
+                        this.objReferrals.Email_Id__c = '';
+                        this.objReferrals.MobileNumber__c = '';
+                        this.objReferrals.Account__c = '';
+                        this.getAllReferrals();
                     }
                 }
             })
             .catch((error) => {
                 this.message = undefined;
                 this.error = error;
-                this.showHtmlMessage('Error while inserting the cases!', this.error, 'error');
+                this.showHtmlMessage('Error while sending the referrals !', this.error, 'error');
                 console.log('error '+JSON.stringify(error));
             });
     }
@@ -109,4 +103,5 @@ export default class ShowMyComplaints extends LightningElement {
 		this.showPopup.variant = variant;
 		this.template.querySelector('c-lwc-custom-toast').showCustomNotice();
 	}
+
 }

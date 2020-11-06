@@ -7,6 +7,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
 
     @api parameters;
     @api recordId;
+    @api totalReferralPoints;
     @track pricebookname;
     @track products = [];
     @track showPopup = { title: '', message: '', variant: '' };
@@ -21,7 +22,8 @@ export default class StoreFrontMasterComponent extends LightningElement {
         showMyOrders: false,
         showMyComplaints: false,
         showMyWarrtiesProducts: false,
-        showMyReferral: false
+        showMyReferral: false,
+        showMySpecialOffers: false
     }
     @track allowProceed = false;
     @track indianFlag = false;
@@ -31,7 +33,8 @@ export default class StoreFrontMasterComponent extends LightningElement {
     @api error;
     @track customer ={
         Name: '',Email_Id__c :'',MobilePhone__c : '',Country__c: '',ShippingStreet:'',
-        ShippingCity:'',ShippingState:'',ShippingCountry:'',ShippingPostalCode:'',User_Name__c : '',Password__c : ''
+        ShippingCity:'',ShippingState:'',ShippingCountry:'',ShippingPostalCode:'',User_Name__c : '',
+        Password__c : '',Referral_Points__c:''
     }
 
     get options() {
@@ -67,6 +70,9 @@ export default class StoreFrontMasterComponent extends LightningElement {
                     this.pricebookname = 'Netherlands Price Book';
                     this.euroFlag = true;
                 } 
+            }
+            if(this.customer.Referral_Points__c){
+                this.totalReferralPoints = this.customer.Referral_Points__c;
             }
             console.log(JSON.stringify(this.customer));
 		} else if (error) {
@@ -215,20 +221,42 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyComplaints = false;
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
-            
+            this.dashboardTabs.showMySpecialOffers = false;
         }else if(value === 'MyOrders'){
             this.dashboardTabs.showMyOrders = true;
             this.dashboardTabs.showHome = false;
             this.dashboardTabs.showMyComplaints = false;
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
-        
+            this.dashboardTabs.showMySpecialOffers = false;
         }else if(value === 'Complaints'){
             this.dashboardTabs.showMyOrders = false;
             this.dashboardTabs.showHome = false;
             this.dashboardTabs.showMyComplaints = true;
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
+            this.dashboardTabs.showMySpecialOffers = false;
+        }else if(value === 'WarrantySupport'){
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = true;
+            this.dashboardTabs.showMyReferral = false;
+            this.dashboardTabs.showMySpecialOffers = false;
+        }else if(value === 'Referrals'){
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = true;
+            this.dashboardTabs.showMySpecialOffers = false;
+        }else if(value === 'SpecialOffers'){
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = false
+            this.dashboardTabs.showMySpecialOffers = true;        
         }
     }
     // To show Toast message

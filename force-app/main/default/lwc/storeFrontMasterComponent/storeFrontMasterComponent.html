@@ -2,7 +2,7 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 11-02-2020
+  @last modified on  : 11-05-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
@@ -34,48 +34,60 @@
         </div>
     </div>
     <div class="slds-grid slds-wrap paddingfromtop">
-        <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-3 slds-size_1-of-1 paddingfromright">
+        <div class="slds-col slds-large-size_1-of-6 slds-medium-size_1-of-6">
             <!-- <div class="slds-text-heading_medium">Quick Actions</div> -->
             <div class="slds-nav-vertical__section">
                 <div>
                   <fieldset class="slds-nav-vertical slds-nav-vertical_compact">
                     <legend class="slds-nav-vertical__title">Dashboard</legend>
-                    <span class="slds-nav-vertical__item">
+                    <a onclick={handleDashboardTabs} data-value="Home"><span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-recent" value="unique-id-02-recent" name="unique-id-compact" checked="" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-recent">
-                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="Home">Home</a></span>
+                        <span class="slds-nav-vertical_radio-faux">Home</span>
                       </label>
-                    </span>
-                    <span class="slds-nav-vertical__item">
+                      </span>
+                    </a>
+                    <a onclick={handleDashboardTabs} data-value="MyOrders"><span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-created-by-me" value="unique-id-02-created-by-me" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-created-by-me">
-                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="MyOrders">My Orders</a></span>
+                        <span class="slds-nav-vertical_radio-faux">My Orders</span>
                       </label>
                     </span>
-                    <span class="slds-nav-vertical__item">
+                    </a>
+                    <a onclick={handleDashboardTabs} data-value="Complaints"><span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-private-reports" value="unique-id-02-private-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-private-reports">
-                        <span class="slds-nav-vertical_radio-faux"><a onclick={handleDashboardTabs} data-value="Complaints">Complaints</a></span>
+                        <span class="slds-nav-vertical_radio-faux">Complaints</span>
                       </label>
                     </span>
-                    <span class="slds-nav-vertical__item">
+                    </a>
+                    <a onclick={handleDashboardTabs} data-value="WarrantySupport"><span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-public-reports" value="unique-id-02-public-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-public-reports">
                         <span class="slds-nav-vertical_radio-faux">Warranty Support</span>
                       </label>
                     </span>
-                    <span class="slds-nav-vertical__item">
+                    </a>
+                    <a onclick={handleDashboardTabs} data-value="Referrals"><span class="slds-nav-vertical__item">
                       <input type="radio" id="unique-id-02-all-reports" value="unique-id-02-all-reports" name="unique-id-compact" />
                       <label class="slds-nav-vertical__action" for="unique-id-02-all-reports">
                         <span class="slds-nav-vertical_radio-faux">Referrals</span>
                       </label>
                     </span>
+                    </a>
+                    <a onclick={handleDashboardTabs} data-value="SpecialOffers"><span class="slds-nav-vertical__item">
+                        <input type="radio" id="unique-id-03-all-reports" value="unique-id-03-all-reports" name="unique-id-compact" />
+                        <label class="slds-nav-vertical__action" for="unique-id-03-all-reports">
+                          <span class="slds-nav-vertical_radio-faux">Special Offers</span>
+                        </label>
+                    </span>
+                    </a>
                   </fieldset>
                 </div>
             </div>
         </div>
         <template if:true={dashboardTabs.showHome}>
-            <div class="slds-col slds-large-size_2-of-3 slds-medium-size_2-of-3 slds-size_1-of-1 paddingfromright">
+            <div class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6">
                 <div class="slds-text-heading_medium slds-text-align_center">CNX StoreFront Products</div>
                 <br />
                 <div class="slds-grid slds-wrap">
@@ -287,11 +299,24 @@
         </template>
         
         <template if:true={dashboardTabs.showMyOrders}>
-            <c-show-my-orders account-id={recordId}></c-show-my-orders>
+            <c-show-my-orders account-id={recordId} class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6"></c-show-my-orders>
         </template>
 
         <template if:true={dashboardTabs.showMyComplaints}>
-            <c-show-my-complaints account-id={recordId}></c-show-my-complaints>
+            <c-show-my-complaints account-id={recordId} class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6"></c-show-my-complaints>
         </template>
+
+        <template if:true={dashboardTabs.showMyWarrtiesProducts}>
+            <c-show-warranty-support account-id={recordId} class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6"></c-show-warranty-support>
+        </template>
+
+        <template if:true={dashboardTabs.showMyReferral}>
+            <c-show-my-referrals account-id={recordId} total-referral-points={totalReferralPoints} class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6"></c-show-my-referrals>
+        </template>
+        
+        <template if:true={dashboardTabs.showMySpecialOffers}>
+            <c-my-special-offers account-id={recordId} class="slds-col slds-large-size_5-of-6 slds-medium-size_5-of-6"></c-my-special-offers>
+        </template>
+        
     </div>
 </template>
