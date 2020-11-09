@@ -1,0 +1,40 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 11-07-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   11-07-2020   shubhranshu   Initial Version
+-->
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <body style="background-image: url(https://prod-eduvanz-bucket.s3.ap-south-1.amazonaws.com/eduvanz-portal/assets/img/new-dark-bg2.png);">
+    <div id="lightning"></div>
+    <script>
+        function getQueryParameters() {
+            let params = {};
+            let search = location.search.substring(1);
+            if (search) {
+                params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                    return key === "" ? value : decodeURIComponent(value)
+                });
+            }
+            return params;
+        }
+
+        var params = getQueryParameters();
+        console.log('params ' + JSON.stringify(params));
+
+        $Lightning.use("c:Customer360App" , function(){
+            $Lightning.createComponent("c:customer360View" ,{ parameters: params },
+            "lightning",
+            function (cmp) {
+                console.log('component created successfully ...');
+                
+            });
+        });
+    </script>
+    </body>
+</apex:page>

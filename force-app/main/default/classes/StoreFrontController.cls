@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 11-05-2020
+ * @last modified on  : 11-07-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -24,6 +24,28 @@ public without sharing class StoreFrontController {
                     account = lstacc[0];
                 }else{
                     account = null;
+                    System.debug('Record not found');
+                }
+            }catch(Exception e){
+                System.debug('Exception '+e.getMessage());
+            }   
+        return account;
+    }
+
+
+    @AuraEnabled 
+    public static List<Account> getCustomerDetails(String recordId) {
+    
+        List<Account> account = new List<Account>();
+        try{
+            System.debug('recordId -->'+recordId);
+            String query = getQueryAllFieldSql('Account','Id=:recordId',null);
+            System.debug('query-->'+query);
+            List<Account> lstacc = (List<Account>) DataBase.query(query);
+            System.debug('lstacc-->'+lstacc);
+                if(lstacc.size()>0){
+                    account = lstacc;
+                }else{
                     System.debug('Record not found');
                 }
             }catch(Exception e){

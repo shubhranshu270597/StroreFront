@@ -16,6 +16,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
         amount : 0,
         show : false
     };
+    @track isModalOpen = false;
 
     @track dashboardTabs ={
         showHome: true,
@@ -69,6 +70,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
                 }else if(this.customer.Country__c === 'Netherlands'){
                     this.pricebookname = 'Netherlands Price Book';
                     this.euroFlag = true;
+                    this.isModalOpen = true;
                 } 
             }
             if(this.customer.Referral_Points__c){
@@ -258,6 +260,15 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyReferral = false
             this.dashboardTabs.showMySpecialOffers = true;        
         }
+    }
+
+    closeModal(){
+        // if(this.isModalOpen){
+        //     this.isModalOpen = false;
+        // }else{!this.isModalOpen}{
+        //     this.isModalOpen = true;
+        // }
+        this.isModalOpen = !this.isModalOpen;
     }
     // To show Toast message
 	showHtmlMessage(title, message, variant) {
