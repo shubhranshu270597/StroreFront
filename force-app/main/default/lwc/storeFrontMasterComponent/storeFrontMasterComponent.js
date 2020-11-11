@@ -2,7 +2,7 @@ import { api, LightningElement, track, wire } from 'lwc';
 import getCustomerData from'@salesforce/apex/StoreFrontController.getCustomerData';
 import getProductsData from '@salesforce/apex/StoreFrontController.getProductsData';
 import addOrdersAndChecout from '@salesforce/apex/StoreFrontController.addOrdersAndChecout';
-
+import getCustomerDetails from '@salesforce/apex/StoreFrontController.getCustomerDetails';
 export default class StoreFrontMasterComponent extends LightningElement {
 
     @api parameters;
@@ -82,7 +82,6 @@ export default class StoreFrontMasterComponent extends LightningElement {
 		}
     }
     
-
     @wire(getProductsData, { PriceBookName: '$pricebookname' })
 	getProductDetails({ error, data }) {
 		console.log('enter for get product details ' + this.pricebookname);
@@ -263,13 +262,12 @@ export default class StoreFrontMasterComponent extends LightningElement {
     }
 
     closeModal(){
-        // if(this.isModalOpen){
-        //     this.isModalOpen = false;
-        // }else{!this.isModalOpen}{
-        //     this.isModalOpen = true;
-        // }
         this.isModalOpen = !this.isModalOpen;
     }
+
+    // handlereferralevent(){
+    //     this.getCustomerDetails();
+    // }
     // To show Toast message
 	showHtmlMessage(title, message, variant) {
 		this.showPopup.title = title;

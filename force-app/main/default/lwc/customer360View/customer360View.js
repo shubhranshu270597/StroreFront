@@ -13,10 +13,10 @@ export default class Customer360View extends LightningElement {
     @api accountId;
     @api parameters;
     @track accountFound = false;
-    @track ordersFound = false;
+   // @track ordersFound = false;
     @track complaintsFound = false;
     @api customer;
-    @api orders;
+  //  @api orders;
     @api cases;
     @track message;
     @track error;
@@ -47,7 +47,7 @@ export default class Customer360View extends LightningElement {
 
             if(this.accountId){
                 this.getCustomerDetails();
-                this.getOrderDetails();
+               // this.getOrderDetails();
                 this.getAllCases();
             }
         })
@@ -81,28 +81,28 @@ export default class Customer360View extends LightningElement {
         });
     }
 
-    getOrderDetails(){
-        getOpportunities({ recordId: this.accountId})
-            .then((result) => {
-                if (result != null) {
-                    this.message = result;
-                    this.error = undefined;
-                    console.log("result", this.message);
-                    if(this.message.includes('error')){
-                        this.showHtmlMessage('Failed to get Orders!',this.message,'error');
-                    }else {
-                        this.ordersFound = true;
-                        this.orders= result;
-                    }
-                }
-            })
-            .catch((error) => {
-                this.message = undefined;
-                this.error = error;
-                this.showHtmlMessage('Error while getting the orders!', this.error, 'error');
-                console.log('error '+JSON.stringify(error));
-            });
-    }
+    // getOrderDetails(){
+    //     getOpportunities({ recordId: this.accountId})
+    //         .then((result) => {
+    //             if (result != null) {
+    //                 this.message = result;
+    //                 this.error = undefined;
+    //                 console.log("result", this.message);
+    //                 if(this.message.includes('error')){
+    //                     this.showHtmlMessage('Failed to get Orders!',this.message,'error');
+    //                 }else {
+    //                     this.ordersFound = true;
+    //                     this.orders= result;
+    //                 }
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             this.message = undefined;
+    //             this.error = error;
+    //             this.showHtmlMessage('Error while getting the orders!', this.error, 'error');
+    //             console.log('error '+JSON.stringify(error));
+    //         });
+    // }
 
     getAllCases(){
         getCases({ recordId: this.accountId})

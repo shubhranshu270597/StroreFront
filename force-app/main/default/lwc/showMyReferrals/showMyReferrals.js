@@ -52,7 +52,7 @@ export default class ShowMyReferrals extends LightningElement {
 		}
     }
 
-    sendReferrals(){
+    sendReferrals(event){
         if (!this.formValidate()) {
 			return;
         }
@@ -75,6 +75,7 @@ export default class ShowMyReferrals extends LightningElement {
                         this.objReferrals.MobileNumber__c = '';
                         this.objReferrals.Account__c = '';
                         this.getAllReferrals();
+                        //this.dispatchEvent(new CustomEvent("referralevent"));
                     }
                 }
             })

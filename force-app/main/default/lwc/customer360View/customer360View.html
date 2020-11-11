@@ -107,148 +107,77 @@
                 </tbody>
             </table>
         </div>
-    </template>
-    <br />
-    <br />
-    <template if:true={ordersFound}>
-        <div class="slds-text-heading_medium slds-text-align_center">Order Details</div>
-        <br />
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
-            <thead>
-            <tr class="slds-line-height_reset">
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Order number">Order number</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Order Name">Order Name</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Price">Price</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Quantity">Quantity</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Delivery / Installation Status">Delivery / Installation Status</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Order Status">Order Status</div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-        
-            <template for:each={orders} for:item="ord">
-                <tr class="slds-hint-parent" key={ord.Id}>
-                <th data-label="Order Number" scope="row">
-                    <div class="slds-truncate" title="Order Number">
-                    <a href="javascript:void(0);">
-                        <lightning-formatted-text value={ord.OrderNumber__c} data-label={ord.OrderNumber__c}></lightning-formatted-text>
-                    </a>
-                    </div>
-                </th>
-                <td data-label="Order Name">
-                    <div class="slds-truncate" title="Order Name">
-                    <lightning-formatted-text value={ord.Order_Name__c}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Price">
-                    <div class="slds-truncate" title="Price">
-                    <lightning-formatted-number value={ord.Amount}></lightning-formatted-number>
-                    </div>
-                </td>
-                <td data-label="Quantity">
-                    <div class="slds-truncate" title="Quantity">
-                    <lightning-formatted-number value={ord.Product_Quantity__c}></lightning-formatted-number>
-                    </div>
-                </td>
-                <td data-label="Delivery Status">
-                    <div class="slds-truncate" title="Delivery Status">
-                    <lightning-formatted-text value={ord.DeliveryInstallationStatus__c}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Order Status">
-                    <div class="slds-truncate" title="Order Status">
-                    <lightning-formatted-text value={ord.Order_Status__c}></lightning-formatted-text>
-                    </div>
-                </td>
+        <br /><br />
+        <c-show-my-orders account-id={accountId}></c-show-my-orders>
+        <br /><br />
+        <template if:true={complaintsFound}>
+            <div class="slds-text-heading_medium slds-text-align_center">Complaints</div>
+            <br />
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Case number">Case number</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Case Reason">Case Reason</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Subject">Subject</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Priority">Priority</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Status">Status</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Created Date">Created Date</div>
+                    </th>
                 </tr>
-            </template>
-            </tbody>
-        </table>
-    </template>
-    <br />
-    <br />
-    <template if:true={complaintsFound}>
-        <div class="slds-text-heading_medium slds-text-align_center">Complaints</div>
-        <br />
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
-            <thead>
-            <tr class="slds-line-height_reset">
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Case number">Case number</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Case Reason">Case Reason</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Subject">Subject</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Priority">Priority</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Status">Status</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title="Created Date">Created Date</div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-        
-            <template for:each={cases} for:item="cs">
-                <tr class="slds-hint-parent" key={cs.Id}>
-                <th data-label="" scope="row">
-                    <div class="slds-truncate" title="Case Number">
-                        <a href="javascript:void(0);">
-                            <lightning-formatted-text value={cs.CaseNumber}></lightning-formatted-text>
-                        </a>
-                    </div>
-                </th>
-                <td data-label="Case Reason">
-                    <div class="slds-truncate" title="Case Reason">
-                    <lightning-formatted-text value={cs.Reason}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Subject">
-                    <div class="slds-truncate" title="Subject">
-                        <lightning-formatted-text value={cs.Subject}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Priority">
-                    <div class="slds-truncate" title="Priority">
-                        <lightning-formatted-text value={cs.Priority}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Status">
-                    <div class="slds-truncate" title="Status">
-                    <lightning-formatted-text value={cs.Status}></lightning-formatted-text>
-                    </div>
-                </td>
-                <td data-label="Created Date">
-                    <div class="slds-truncate" title="Created Date">
-                    <lightning-formatted-text value={cs.CreatedDate}></lightning-formatted-text>
-                    </div>
-                </td>
-                </tr>
-            </template>
-            </tbody>
-        </table>
-    </template>
-    <br />
-    <br />
-    <template if:true={accountFound}>
+                </thead>
+                <tbody>
+            
+                <template for:each={cases} for:item="cs">
+                    <tr class="slds-hint-parent" key={cs.Id}>
+                    <th data-label="" scope="row">
+                        <div class="slds-truncate" title="Case Number">
+                            <a href="javascript:void(0);">
+                                <lightning-formatted-text value={cs.CaseNumber}></lightning-formatted-text>
+                            </a>
+                        </div>
+                    </th>
+                    <td data-label="Case Reason">
+                        <div class="slds-truncate" title="Case Reason">
+                        <lightning-formatted-text value={cs.Reason}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    <td data-label="Subject">
+                        <div class="slds-truncate" title="Subject">
+                            <lightning-formatted-text value={cs.Subject}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    <td data-label="Priority">
+                        <div class="slds-truncate" title="Priority">
+                            <lightning-formatted-text value={cs.Priority}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    <td data-label="Status">
+                        <div class="slds-truncate" title="Status">
+                        <lightning-formatted-text value={cs.Status}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    <td data-label="Created Date">
+                        <div class="slds-truncate" title="Created Date">
+                        <lightning-formatted-text value={cs.CreatedDate}></lightning-formatted-text>
+                        </div>
+                    </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </template>
+        <br /><br />
         <div class="slds-text-heading_medium slds-text-align_center">Total Product purchase till today : {totalproduct}</div>
         <br />
         <div class="slds-text-heading_medium slds-text-align_center">Total Business generated till today : {totalbusiness}</div>    

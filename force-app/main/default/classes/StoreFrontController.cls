@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 11-07-2020
+ * @last modified on  : 11-10-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -60,7 +60,7 @@ public without sharing class StoreFrontController {
         List<PricebookEntry> entries = new List<PricebookEntry>();
         if(String.isNotBlank(PriceBookName)){
             entries = [Select Id,PriceBook2.Name,Product2Id,Product2.Name,Product2.ProductCode,Product2.Price_Type__c,
-                        Product2.Product_Quantity__c,UnitPrice From PricebookEntry
+                        Product2.Product_Quantity__c,UnitPrice,Product2.Image_URL__c From PricebookEntry
                         Where PriceBook2.Name = :PriceBookName
                         and IsActive = true];
         }
@@ -72,7 +72,7 @@ public without sharing class StoreFrontController {
     public static List<Product_Bundle__c> getProductBundlesData() {
     
         List<Product_Bundle__c> prodbundles = new List<Product_Bundle__c>();
-        prodbundles = [Select Id,Name,Active__c,Expire_Date__c,Products__c From Product_Bundle__c Where Active__c = true and Expire_Date__c >: System.today()];
+        prodbundles = [Select Id,Name,Active__c,Expire_Date__c,Products__c,Image_URL__c From Product_Bundle__c Where Active__c = true and Expire_Date__c >: System.today()];
 
         return prodbundles;
     }
