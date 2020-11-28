@@ -3,6 +3,7 @@ import getCustomerData from'@salesforce/apex/StoreFrontController.getCustomerDat
 import getProductsData from '@salesforce/apex/StoreFrontController.getProductsData';
 import addOrdersAndChecout from '@salesforce/apex/StoreFrontController.addOrdersAndChecout';
 import getCustomerDetails from '@salesforce/apex/StoreFrontController.getCustomerDetails';
+import saveInstamojoResponse from '@salesforce/apex/InstamojoPurchaseProductController.saveInstamojoResponse';
 export default class StoreFrontMasterComponent extends LightningElement {
 
     @api parameters;
@@ -201,7 +202,8 @@ export default class StoreFrontMasterComponent extends LightningElement {
                         this.showHtmlMessage('Failed to checkout!',this.message,'error');
                     }else {
                         this.showHtmlMessage('Order added successfully.!', 'Order will deliver within 2-3 working days.' , 'success');
-                        window.location.reload();
+                        this.redirectToPaymentGateway();
+                        // window.location.reload();
                     }
                 }
             })
@@ -213,6 +215,38 @@ export default class StoreFrontMasterComponent extends LightningElement {
             });
     }
 
+    redirectToPaymentGateway(){
+        let prodList = [];
+        this.products.forEach(element => {
+            if(element.selected) {
+                prodList = [...prodList,element.Product2.Name];
+            }
+        });
+        let prodName = prodList.join(", ");
+        saveInstamojoResponse({ Amount: this.calculation.amount, Purpose: prodName, buyer_name: this.customer.Name, email: this.customer.Email_Id__c, phone: this.customer.MobilePhone__c, recordId: this.recordId})
+            .then((result) => {
+                if (result != null) {
+                    this.message = result;
+                    this.error = undefined;
+                    console.log("result", this.message);
+                    // if(this.message.includes('error')){
+                    //     this.showHtmlMessage('Failed to redirect to gateway!','Error','error');
+                    // }
+                    // else {
+                        
+                    // }
+                    // if(result){
+                        window.location.replace(result);
+                    // }
+                }
+            })
+            .catch((error) => {
+                this.message = undefined;
+                this.error = error;
+                this.showHtmlMessage('Error while redirecting!', this.error, 'error');
+                console.log('error '+JSON.stringify(error));
+            });
+    }
     handleDashboardTabs(event){
         let value = event.currentTarget.dataset.value;
         console.log('value '+value);
