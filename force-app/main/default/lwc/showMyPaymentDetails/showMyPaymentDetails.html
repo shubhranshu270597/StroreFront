@@ -1,0 +1,83 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 12-01-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   12-01-2020   shubhranshu   Initial Version
+-->
+<template>
+     <!-- Message Toast Starts here-->
+   <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+   <!-- Message Toast Ends here-->
+   <div class="slds-text-heading_medium slds-text-align_center">Payment Details</div>
+   <br />
+   <div class="slds-grid slds-wrap slds-form-element">
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Payment Id">Payment Id</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Payment For">Payment For</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Amount">Amount</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Payment request id">Payment request id</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Payment Status">Payment Status</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Refund Status">Refund Status</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+    
+        <template for:each={payments} for:item="pay">
+            <tr class="slds-hint-parent" key={pay.Id}>
+            <th data-label="Payment Id" scope="row">
+                <div class="slds-truncate" title="Payment Id">
+                <a href="javascript:void(0);">
+                    <lightning-formatted-text value={pay.Payment_Id__c} data-label={pay.Payment_Id__c}></lightning-formatted-text>
+                </a>
+                </div>
+            </th>
+            <td data-label="Payment For">
+                <div class="slds-truncate" title="Payment For">
+                <lightning-formatted-text value={pay.Payment_For__c}></lightning-formatted-text>
+                </div>
+            </td>
+            <td data-label="Amount">
+                <div class="slds-truncate" title="Amount">
+                <lightning-formatted-number value={pay.Amount__c}></lightning-formatted-number>
+                </div>
+            </td>
+            <td data-label="Payment request id">
+                <div class="slds-truncate" title="Payment request id">
+                <lightning-formatted-text value={pay.Payment_request_id__c}></lightning-formatted-text>
+                </div>
+            </td>
+            <td data-label="Payment Status">
+                <div class="slds-truncate" title="Payment Status">
+                <lightning-formatted-text value={pay.Payment_Status__c}></lightning-formatted-text>
+                </div>
+            </td>
+            <td data-label="Refund Status">
+                <div class="slds-truncate" title="Refund Status">
+                <lightning-formatted-text value={pay.Refund_Status__c}></lightning-formatted-text>
+                </div>
+            </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+</div>
+
+</template>

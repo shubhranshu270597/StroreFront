@@ -8,6 +8,9 @@ export default class StoreFrontMasterComponent extends LightningElement {
 
     @api parameters;
     @api recordId;
+    @api paymentRequestId;
+    @api paymentId;
+    @api paymentStatus;
     @api totalReferralPoints;
     @track pricebookname;
     @track products = [];
@@ -18,6 +21,8 @@ export default class StoreFrontMasterComponent extends LightningElement {
         show : false
     };
     @track isModalOpen = false;
+    @track dollarToInrCuurency;
+    @track eurToInrCurrency;
 
     @track dashboardTabs ={
         showHome: true,
@@ -25,12 +30,15 @@ export default class StoreFrontMasterComponent extends LightningElement {
         showMyComplaints: false,
         showMyWarrtiesProducts: false,
         showMyReferral: false,
-        showMySpecialOffers: false
+        showMySpecialOffers: false,
+        showMyPayments: false
     }
     @track allowProceed = false;
     @track indianFlag = false;
     @track usFlag = false;
     @track euroFlag = false;
+    @track paymentMessageSection = false;
+    @track paymentMessage;
     @api message;
     @api error;
     @track customer ={
@@ -50,6 +58,22 @@ export default class StoreFrontMasterComponent extends LightningElement {
 		if (Object.prototype.hasOwnProperty.call(this.parameters, 'id')) {
 			this.recordId = this.parameters.id;
         } 
+        if (Object.prototype.hasOwnProperty.call(this.parameters, 'payment_request_id')) {
+			this.paymentRequestId = this.parameters.payment_request_id;
+        }
+        if (Object.prototype.hasOwnProperty.call(this.parameters, 'payment_id')) {
+			this.paymentId = this.parameters.payment_id;
+        }
+        if (Object.prototype.hasOwnProperty.call(this.parameters, 'payment_status')) {
+			this.paymentStatus = this.parameters.payment_status;
+        } 
+        if(this.paymentId && this.paymentRequestId && this.paymentStatus === 'Credit'){
+            this.paymentMessage = 'Your last transaction was successfully paid, your unique reference id is '+this.paymentId;
+            this.paymentMessageSection = true;
+        }else if (this.paymentId && this.paymentRequestId && this.paymentStatus !== 'Credit'){
+            this.paymentMessage = 'Your last transaction was failed.';
+            this.paymentMessageSection = true;
+        }
     }
 
     @wire(getCustomerData, { recordId: '$recordId' })
@@ -68,10 +92,12 @@ export default class StoreFrontMasterComponent extends LightningElement {
                 }else if(this.customer.Country__c === 'United States'){
                     this.pricebookname = 'United State Price Book';
                     this.usFlag = true;
+                    this.getDollarToInrCurrency();
                 }else if(this.customer.Country__c === 'Netherlands'){
                     this.pricebookname = 'Netherlands Price Book';
                     this.euroFlag = true;
                     this.isModalOpen = true;
+                    this.getEurToInrCurrency();
                 } 
             }
             if(this.customer.Referral_Points__c){
@@ -223,6 +249,11 @@ export default class StoreFrontMasterComponent extends LightningElement {
             }
         });
         let prodName = prodList.join(", ");
+        if(this.customer.Country__c === 'United States'){
+            this.calculation.amount = parseFloat(this.dollarToInrCuurency * this.calculation.amount).toFixed(2);
+        }else if(this.customer.Country__c === 'Netherlands'){
+           this.calculation.amount = parseFloat(this.eurToInrCurrency * this.calculation.amount).toFixed(2);
+        }
         saveInstamojoResponse({ Amount: this.calculation.amount, Purpose: prodName, buyer_name: this.customer.Name, email: this.customer.Email_Id__c, phone: this.customer.MobilePhone__c, recordId: this.recordId})
             .then((result) => {
                 if (result != null) {
@@ -257,6 +288,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
             this.dashboardTabs.showMySpecialOffers = false;
+            this.dashboardTabs.showMyPayments = false;
         }else if(value === 'MyOrders'){
             this.dashboardTabs.showMyOrders = true;
             this.dashboardTabs.showHome = false;
@@ -264,6 +296,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
             this.dashboardTabs.showMySpecialOffers = false;
+            this.dashboardTabs.showMyPayments = false;
         }else if(value === 'Complaints'){
             this.dashboardTabs.showMyOrders = false;
             this.dashboardTabs.showHome = false;
@@ -271,6 +304,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false;
             this.dashboardTabs.showMySpecialOffers = false;
+            this.dashboardTabs.showMyPayments = false;
         }else if(value === 'WarrantySupport'){
             this.dashboardTabs.showMyOrders = false;
             this.dashboardTabs.showHome = false;
@@ -278,6 +312,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyWarrtiesProducts = true;
             this.dashboardTabs.showMyReferral = false;
             this.dashboardTabs.showMySpecialOffers = false;
+            this.dashboardTabs.showMyPayments = false;
         }else if(value === 'Referrals'){
             this.dashboardTabs.showMyOrders = false;
             this.dashboardTabs.showHome = false;
@@ -285,20 +320,73 @@ export default class StoreFrontMasterComponent extends LightningElement {
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = true;
             this.dashboardTabs.showMySpecialOffers = false;
+            this.dashboardTabs.showMyPayments = false;
         }else if(value === 'SpecialOffers'){
             this.dashboardTabs.showMyOrders = false;
             this.dashboardTabs.showHome = false;
             this.dashboardTabs.showMyComplaints = false;
             this.dashboardTabs.showMyWarrtiesProducts = false;
             this.dashboardTabs.showMyReferral = false
-            this.dashboardTabs.showMySpecialOffers = true;        
+            this.dashboardTabs.showMySpecialOffers = true; 
+            this.dashboardTabs.showMyPayments = false;       
+        }else if(value === 'Payments'){
+            this.dashboardTabs.showMyOrders = false;
+            this.dashboardTabs.showHome = false;
+            this.dashboardTabs.showMyComplaints = false;
+            this.dashboardTabs.showMyWarrtiesProducts = false;
+            this.dashboardTabs.showMyReferral = false
+            this.dashboardTabs.showMySpecialOffers = false;   
+            this.dashboardTabs.showMyPayments = true;     
         }
     }
 
     closeModal(){
         this.isModalOpen = !this.isModalOpen;
     }
+    
+    closeModalForPayment(){
+        this.paymentMessageSection = !this.paymentMessageSection;
+    }
+    
+    getDollarToInrCurrency(){
+        let request = new XMLHttpRequest();
+        request.open("GET","https://api.exchangeratesapi.io/latest?base=USD");
+        request.send();
+        request.onload = () => {
+            console.log(request);
+            if(request.status === 200){
+                let currentValues = JSON.parse(request.response);
+                console.log(JSON.stringify(currentValues));
+                this.dollarToInrCuurency = currentValues.rates.INR;
+                console.log(JSON.stringify(this.dollarToInrCuurency));
+            }else{
+                console.log(`error ${request.status} ${request.statusText}`)
+                this.showHtmlMessage('Error!', request.status +' '+request.statusText, 'error');
+                
+            }
+        }
 
+    }
+
+    getEurToInrCurrency(){
+        let request = new XMLHttpRequest();
+        request.open("GET","https://api.exchangeratesapi.io/latest?base=EUR");
+        request.send();
+        request.onload = () => {
+            console.log(request);
+            if(request.status === 200){
+                let currentValues = JSON.parse(request.response);
+                console.log(JSON.stringify(currentValues));
+                this.eurToInrCurrency = currentValues.rates.INR;
+                console.log(JSON.stringify(this.eurToInrCurrency));
+            }else{
+                console.log(`error ${request.status} ${request.statusText}`)
+                this.showHtmlMessage('Error!', request.status +' '+request.statusText, 'error');
+                
+            }
+        }
+
+    }
     // handlereferralevent(){
     //     this.getCustomerDetails();
     // }

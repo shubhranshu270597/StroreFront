@@ -109,6 +109,7 @@ global class StoreFrontPaymentWebhookAPI {
             if(lstacc.size()>0 && lstPay.size() == 0){
                 Payment__c payment = new Payment__c();
                 payment.Account__c = lstacc[0].Id;
+                payment.User_Email__c = lstacc[0].Email_Id__c;
                 payment.Amount__c = amount;
                 payment.Currency__c = currencyCode;
                 payment.fees__c = fees;

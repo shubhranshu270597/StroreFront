@@ -2,7 +2,7 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 11-08-2020
+  @last modified on  : 12-06-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
@@ -12,6 +12,11 @@
     <apex:includeLightning />
     <body style="background-color: #364150!important;background-image: url('https://prod-eduvanz-bucket.s3.ap-south-1.amazonaws.com/eduvanz-portal/assets/img/new-dark-bg2.png')">
     <div id="lightning"></div>
+    <button class="fb-login-button"
+    data-scope="public_profile,email" data-use-continue-as="true"
+    data-max-rows="1" data-size="Medium" data-show-faces="false" data-auto-logout-link="false"
+    data-button-type="continue_with" onclick="checkLoginState();">
+    </button>
     <!-- https://eskipaper.com/images/cube-wallpaper-2.jpg -->
     <script>
         $Lightning.use("c:StoreFrontApp" , function(){
@@ -25,5 +30,65 @@
             });
         });
     </script>
+     <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '727684621178135',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v2.9'
+            });
+            // FB.login(function(response) {
+            //     if (response.authResponse) {
+            //         window.top.location = "https://storefront-developer-edition.ap18.force.com/StoreFront/StoreFrontHome?id=0012y0000089mj7";
+            //     }
+            // });
+            FB.AppEvents.logPageView();
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+
+        function statusChangeCallbackFn(response) {
+            if (response.status === 'connected') {
+                console.log('response.status '+response.status);
+                basicAPIRequest();
+            } else if (response.status === 'not_authorized') {
+                console.error("Not logged into this app on Facebook.");
+                'into this app.';
+            } else {
+                console.error("Not even logged into Facebook.");
+            }
+        }
+        function checkLoginState() {
+            alert('checkLoginState ');
+            FB.getLoginStatus(function (response) {
+                console.log('response '+JSON.stringify(response));
+                statusChangeCallbackFn(response);
+                //saveDetails();
+            });
+        }
+
+        function basicAPIRequest() {
+            console.info("Wait, fetching your information...");
+            var infoFields = "id,about,age_range,picture,birthday,email,first_name,gender,hometown,link,location,middle_name,last_name,name,timezone,website,work";
+            FB.api('/me?fields=' + infoFields, function (response) {
+                // var firstname = response.first_name;
+                // var lastname = response.last_name;
+                // var mail = response.email;
+                // var dateofbirth = response.birthday;
+                console.log('response '+JSON.stringify(response));
+                $("#name").append(response.name);
+                $("#fb-profile-picture").append('<img src="' + response.picture.data.url + '" /> ');
+            });
+        }
+    </script>
+
     </body>
 </apex:page>

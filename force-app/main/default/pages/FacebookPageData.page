@@ -1,0 +1,23 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 12-05-2020
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   12-05-2020   shubhranshu   Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+    <form id="facebookForm" method="post" enctype="multipart/form-data" action="https://www.facebook.com/v9.0/dialog/oauth">
+        <input type="hidden" value="{!$CurrentPage.parameters.client_id}" name="client_id" />
+        <input type="hidden" value="{!$CurrentPage.parameters.redirect_uri}" name="redirect_uri" />
+        <input type="hidden" value="{!$CurrentPage.parameters.state}" name="state" /> 
+       </form>
+<script>
+    window.onload=function()
+   {
+      document.getElementById('facebookForm').submit();
+   };
+   </script>
+</apex:page>

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 11-10-2020
+ * @last modified on  : 12-01-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -193,6 +193,18 @@ public without sharing class StoreFrontController {
             result = 'Product id not found';
         }
         return result;
+    }
+    
+    @AuraEnabled
+    public static List<Payment__c> getPayments(String recordId) {
+    
+        List<Payment__c> paylst = new List<Payment__c>();
+        if(String.isNotBlank(recordId)){
+            paylst = [Select Id,Account__c,Amount__c,Currency__c,fees__c,Instamojo_Refund_Response__c,Longurl__c,Mac_Id__c,Payment_For__c,Payment_Id__c,Payment_request_id__c,
+                        Payment_Status__c,Refund_Amount_to_Proceed__c,Refunded__c,Refund_Status__c,Short_Url__c,Status__c,User_Email__c from Payment__c Where Account__c =: recordId];
+        
+        }
+        return paylst;
     }
 
     @AuraEnabled

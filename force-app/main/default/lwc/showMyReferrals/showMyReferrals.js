@@ -75,7 +75,7 @@ export default class ShowMyReferrals extends LightningElement {
                         this.objReferrals.MobileNumber__c = '';
                         this.objReferrals.Account__c = '';
                         this.getAllReferrals();
-                        //this.dispatchEvent(new CustomEvent("referralevent"));
+                        this.dispatchEvent(new CustomEvent("referralevent"));
                     }
                 }
             })
