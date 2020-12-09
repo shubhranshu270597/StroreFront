@@ -5,6 +5,7 @@ import addOrdersAndChecout from '@salesforce/apex/StoreFrontController.addOrders
 import getCustomerDetails from '@salesforce/apex/StoreFrontController.getCustomerDetails';
 import updateCutsomerDetails from '@salesforce/apex/StoreFrontController.updateCutsomerDetails';
 import saveInstamojoResponse from '@salesforce/apex/InstamojoPurchaseProductController.saveInstamojoResponse';
+import savePayment from '@salesforce/apex/StoreFrontController.savePayment';
 export default class StoreFrontMasterComponent extends LightningElement {
 
     @api parameters;
@@ -41,7 +42,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
     @track paymentMessageSection = false;
     @track updateEmailMobileSection = false;
     @track customerEmail;
-@track customerMobile;
+    @track customerMobile;
     @track paymentMessage;
     @api message;
     @api error;
@@ -74,6 +75,7 @@ export default class StoreFrontMasterComponent extends LightningElement {
         if(this.paymentId && this.paymentRequestId && this.paymentStatus === 'Credit'){
             this.paymentMessage = 'Your last transaction was successfully paid, your unique reference id is '+this.paymentId;
             this.paymentMessageSection = true;
+            this.callGetPaymentDetails();
         }else if (this.paymentId && this.paymentRequestId && this.paymentStatus !== 'Credit'){
             this.paymentMessage = 'Your last transaction was failed.';
             this.paymentMessageSection = true;
@@ -436,6 +438,52 @@ export default class StoreFrontMasterComponent extends LightningElement {
                 this.showHtmlMessage('Error!', request.status +' '+request.statusText, 'error');
                 
             }
+        }
+
+    }
+
+    callGetPaymentDetails(){
+        // let request = new XMLHttpRequest();
+        // request.open("GET","https://test.instamojo.com/api/1.1/payment-requests/"+this.paymentRequestId);
+        // request.setRequestHeader('Access-Control-Allow-Origin', '*');
+        // request.setRequestHeader('X-Api-Key', 'test_b91292eafe8832a7a2c484f126e');
+        // request.setRequestHeader('X-Auth-Token', 'test_5d34da6167ad9beaf76dc0ce3ec');
+        // request.send();
+        // request.onload = () => {
+        //     console.log(request);
+        //     if(request.status === 200){
+        //         let paymentData = JSON.parse(request.response);
+        //         console.log(JSON.stringify(paymentData));
+        //     }else{
+        //         console.log(`error ${request.status} ${request.statusText}`)
+        //         this.showHtmlMessage('Error!', request.status +' '+request.statusText, 'error');
+                
+        //     }
+        // }
+
+        if(this.paymentRequestId){
+                
+            savePayment({ paymentRequestId: this.paymentRequestId})
+            .then((result) => {
+                if (result != null) {
+                    this.message = result;
+                    this.error = undefined;
+                    console.log("result", this.message);
+                    if(this.message === 'Payment Inseted successfully' || this.message === 'Payment Updated successfully'){
+                        this.showHtmlMessage('Success!', this.message, 'success');   
+                    }else{
+                        this.showHtmlMessage('Error!', this.message, 'error');
+                    }
+                }
+            })
+            .catch((error) => {
+                this.message = undefined;
+                this.error = error;
+                this.showHtmlMessage('Error while updating the record!', this.error, 'error');
+                console.log('error '+JSON.stringify(error));
+            });
+        }else{
+            this.showHtmlMessage('Payment Id is missing!', 'Something went wrong', 'warning');
         }
 
     }
