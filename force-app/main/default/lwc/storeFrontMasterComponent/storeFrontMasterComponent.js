@@ -3,6 +3,7 @@ import getCustomerData from'@salesforce/apex/StoreFrontController.getCustomerDat
 import getProductsData from '@salesforce/apex/StoreFrontController.getProductsData';
 import addOrdersAndChecout from '@salesforce/apex/StoreFrontController.addOrdersAndChecout';
 import getCustomerDetails from '@salesforce/apex/StoreFrontController.getCustomerDetails';
+import updateCutsomerDetails from '@salesforce/apex/StoreFrontController.updateCutsomerDetails';
 import saveInstamojoResponse from '@salesforce/apex/InstamojoPurchaseProductController.saveInstamojoResponse';
 export default class StoreFrontMasterComponent extends LightningElement {
 
@@ -38,6 +39,9 @@ export default class StoreFrontMasterComponent extends LightningElement {
     @track usFlag = false;
     @track euroFlag = false;
     @track paymentMessageSection = false;
+    @track updateEmailMobileSection = false;
+    @track customerEmail;
+@track customerMobile;
     @track paymentMessage;
     @api message;
     @api error;
@@ -102,6 +106,12 @@ export default class StoreFrontMasterComponent extends LightningElement {
             }
             if(this.customer.Referral_Points__c){
                 this.totalReferralPoints = this.customer.Referral_Points__c;
+            }
+
+            if(this.customer.Email_Id__c === '' && this.customer.MobilePhone__c === ''){
+                this.updateEmailMobileSection = true;
+            }else{
+                this.updateEmailMobileSection = false;
             }
             console.log(JSON.stringify(this.customer));
 		} else if (error) {
@@ -278,6 +288,44 @@ export default class StoreFrontMasterComponent extends LightningElement {
                 console.log('error '+JSON.stringify(error));
             });
     }
+
+    handleuserUpdateInfo(event){
+        let value = event.target.value;
+        let namedValue = event.currentTarget.dataset.name;
+        console.log('value ==> '+value +' name ==>'+namedValue);
+        if(namedValue === 'customerEmail' && value){
+            this.customerEmail = value;
+        }
+        if(namedValue === 'customerMobile' && value){
+            this.customerMobile = value;
+        }
+    }
+    saveCustomerDetails(){
+        console.log('customerEmail '+this.customerEmail +' customerMobile '+this.customerMobile);
+        if(this.customerEmail && this.customerMobile){
+                
+            updateCutsomerDetails({ recordId: this.recordId , customerEmail: this.customerEmail, customerMobile: this.customerMobile})
+            .then((result) => {
+                if (result != null) {
+                    this.message = result;
+                    this.error = undefined;
+                    console.log("result", this.message);
+                    if(this.message === 'success'){
+                        this.showHtmlMessage('Customer Info updated successfully!', this.message, 'success');   
+                    }
+                    this.updateEmailMobileSection = !this.updateEmailMobileSection;
+                }
+            })
+            .catch((error) => {
+                this.message = undefined;
+                this.error = error;
+                this.showHtmlMessage('Error while updating the record!', this.error, 'error');
+                console.log('error '+JSON.stringify(error));
+            });
+        }else{
+            this.showHtmlMessage('Mandatory Fields are missing!', 'Invalid Details', 'error');
+        }
+    }
     handleDashboardTabs(event){
         let value = event.currentTarget.dataset.value;
         console.log('value '+value);
@@ -348,6 +396,10 @@ export default class StoreFrontMasterComponent extends LightningElement {
         this.paymentMessageSection = !this.paymentMessageSection;
     }
     
+    // closeModalForUpdateDetails(){
+    //     this.updateEmailMobileSection = !this.updateEmailMobileSection;
+    // }
+
     getDollarToInrCurrency(){
         let request = new XMLHttpRequest();
         request.open("GET","https://api.exchangeratesapi.io/latest?base=USD");

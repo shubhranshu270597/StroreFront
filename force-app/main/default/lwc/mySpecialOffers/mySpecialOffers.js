@@ -69,6 +69,8 @@ export default class MySpecialOffers extends LightningElement {
                         this.showHtmlMessage('Failed to add claim!',this.message,'error');
                     }else if(this.message.includes('already added')){
                         this.showHtmlMessage('Failed to add claim!',this.message,'warning');
+                    }else if(this.message.includes('already claim')){
+                        this.showHtmlMessage('Failed to add claim!',this.message,'warning');
                     }else {
                         this.showHtmlMessage('Offer Claim added successfully.!', 'Success' , 'success');
                         window.location.reload();

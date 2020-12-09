@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 12-06-2020
+ * @last modified on  : 12-07-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -189,66 +189,76 @@ global class InstamojoPurchaseProductController {
         Blob blobKey = crypto.generateAesKey(128);
         String key = EncodingUtil.convertToHex(blobKey);
         String pwd = key.substring(0,len);
-        Account acc = new Account();
-        if(String.isNotBlank(fname) && String.isNotBlank(lname)){
-            acc.Name = fname +' '+lname;
-            acc.User_Name__c = fname+lname+'@cnxstorefront.com';
-            acc.Country__c = 'India';
-            acc.Password__c = pwd;
-            acc.ShippingCity = 'test';
-            acc.ShippingCountry = 'India';
-            acc.ShippingState = 'test';
-            acc.ShippingStreet = 'test';
-            acc.ShippingPostalCode = '000000';
-        }
-        if(String.isNotBlank(uemail)){
-            acc.Email_Id__c = uemail;
-        }
+        // Integer randomNumber = Integer.valueof((Math.random() * 100));
+        String username = fname+lname+'@cnxstorefront.com';
+        username = username.toLowercase();
+        String custId = '';
+        List<Account> lstacc = [SELECT Id,User_Name__c from Account Where User_Name__c=:username ORDER BY CreatedDate desc LIMIT 1];
+        if(lstacc.size() == 0){
+            
+            Account acc = new Account();
+            if(String.isNotBlank(fname) && String.isNotBlank(lname)){
+                acc.Name = fname +' '+lname;
+                acc.User_Name__c = username;
+                acc.Country__c = 'India';
+                acc.Password__c = pwd;
+                acc.ShippingCity = 'test';
+                acc.ShippingCountry = 'India';
+                acc.ShippingState = 'test';
+                acc.ShippingStreet = 'test';
+                acc.ShippingPostalCode = '000000';
+            }
+            if(String.isNotBlank(uemail)){
+                acc.Email_Id__c = uemail;
+            }
 
-        Map<String,String> mapofPriceBookIds = new Map<String,String>();
-        for(Pricebook2 pb:[SELECT IsActive ,Description, IsStandard, Id, Name, SystemModstamp FROM Pricebook2 WHERE IsActive=True]){
-            if(pb.NAME.contains('Netherlands')){
-                mapofPriceBookIds.put('Netherlands',pb.Id);
-            }
-            if(pb.NAME.contains('Indian')){
-                mapofPriceBookIds.put('India',pb.Id);
-            }
-            if(pb.NAME.contains('United State')){
-                mapofPriceBookIds.put('United State',pb.Id);
-            }
-        }
-        System.debug('mapofPriceBookIds '+mapofPriceBookIds);
-
-        if(acc != null){
-            try{    
-                insert acc;
-                System.debug('Account is inserted successfully...');
-                Contract contract = new Contract();
-                contract.AccountId = acc.Id;
-                contract.BillingCity = acc.ShippingCity;
-                contract.BillingCountry = acc.ShippingCountry;
-                contract.BillingState = acc.ShippingState;
-                contract.BillingStreet = acc.ShippingStreet;
-                contract.BillingPostalCode = acc.ShippingPostalCode;
-                contract.StartDate = date.today();
-                contract.ContractTerm = 12;
-                if(acc.ShippingCountry == 'Netherlands'){
-                    contract.Pricebook2Id = mapofPriceBookIds.get('Netherlands');
-                }else if(acc.ShippingCountry == 'India'){
-                    contract.Pricebook2Id = mapofPriceBookIds.get('India');
-                }else if(acc.ShippingCountry == 'United State'){
-                    contract.Pricebook2Id = mapofPriceBookIds.get('United State');
+            Map<String,String> mapofPriceBookIds = new Map<String,String>();
+            for(Pricebook2 pb:[SELECT IsActive ,Description, IsStandard, Id, Name, SystemModstamp FROM Pricebook2 WHERE IsActive=True]){
+                if(pb.NAME.contains('Netherlands')){
+                    mapofPriceBookIds.put('Netherlands',pb.Id);
                 }
-                
-                System.debug('contract '+contract);
-                insert contract;
-                System.debug('contract inserted successfully...');
-            }catch(Exception e){
-                throw new AuraHandledException(e.getMessage());
+                if(pb.NAME.contains('Indian')){
+                    mapofPriceBookIds.put('India',pb.Id);
+                }
+                if(pb.NAME.contains('United State')){
+                    mapofPriceBookIds.put('United State',pb.Id);
+                }
             }
-        }
+            System.debug('mapofPriceBookIds '+mapofPriceBookIds);
 
-        String formDataURL = 'https://storefront-developer-edition.ap18.force.com/StoreFront/StoreFrontHome?id='+acc.Id;
+            if(acc != null){
+                try{    
+                    insert acc;
+                    custId = acc.Id;
+                    System.debug('Account is inserted successfully...');
+                    Contract contract = new Contract();
+                    contract.AccountId = acc.Id;
+                    contract.BillingCity = acc.ShippingCity;
+                    contract.BillingCountry = acc.ShippingCountry;
+                    contract.BillingState = acc.ShippingState;
+                    contract.BillingStreet = acc.ShippingStreet;
+                    contract.BillingPostalCode = acc.ShippingPostalCode;
+                    contract.StartDate = date.today();
+                    contract.ContractTerm = 12;
+                    if(acc.ShippingCountry == 'Netherlands'){
+                        contract.Pricebook2Id = mapofPriceBookIds.get('Netherlands');
+                    }else if(acc.ShippingCountry == 'India'){
+                        contract.Pricebook2Id = mapofPriceBookIds.get('India');
+                    }else if(acc.ShippingCountry == 'United State'){
+                        contract.Pricebook2Id = mapofPriceBookIds.get('United State');
+                    }
+                    
+                    System.debug('contract '+contract);
+                    insert contract;
+                    System.debug('contract inserted successfully...');
+                }catch(Exception e){
+                    throw new AuraHandledException(e.getMessage());
+                }
+            }
+        }else{
+            custId = lstacc[0].Id;
+        }
+        String formDataURL = 'https://storefront-developer-edition.ap18.force.com/StoreFront/StoreFrontHome?id='+custId;
         PageReference pg = new PageReference(formDataURL);          
         pg.setRedirect(true);
         return pg;

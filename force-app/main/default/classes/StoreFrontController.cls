@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 12-01-2020
+ * @last modified on  : 12-07-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -208,6 +208,24 @@ public without sharing class StoreFrontController {
     }
 
     @AuraEnabled
+    public static String updateCutsomerDetails(String recordId,String customerEmail,String customerMobile) {
+        
+        String result = '';
+        Account acc = new Account();
+        acc.Id = recordId;
+        acc.Email_Id__c = customerEmail;
+        acc.MobilePhone__c = customerMobile;
+
+        try {
+            update acc;
+            result = 'success';
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        } 
+        return result;
+    }
+
+    @AuraEnabled
     public static String addOrdersAndChecout(String accountId,List<String> productsName){
         String result = '';
         System.debug('accountId -->'+accountId+ 'productsName '+productsName);
@@ -249,10 +267,12 @@ public without sharing class StoreFrontController {
     public static string saveProductBundle(String prodId,String accountId){
         String result = '';
         try {
-            List<Account> lstacc = [Select Id,Product_Bundle__c from Account Where Id=:accountId LIMIT 1];
+            List<Account> lstacc = [Select Id,Product_Bundle__c,Product_Bundle__r.Name from Account Where Id=:accountId LIMIT 1];
             if(lstacc.size() >0 ){
                 for(Account acc: lstacc){
-                    if(acc.Product_Bundle__c == prodId){
+                    if(acc.Product_Bundle__c != null){
+                        return result = 'It seems to be you had already claim your offer with '+acc.Product_Bundle__r.Name; 
+                    }else if(acc.Product_Bundle__c == prodId){
                        return result = 'It seems to be this product bundle is already added in your cart';
                     }else{
                         acc.Product_Bundle__c = prodId;

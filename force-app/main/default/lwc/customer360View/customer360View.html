@@ -2,7 +2,7 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 11-09-2020
+  @last modified on  : 12-07-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
@@ -109,6 +109,8 @@
         </div>
         <br /><br />
         <c-show-my-orders account-id={accountId}></c-show-my-orders>
+        <br /><br />
+        <c-show-my-payment-details account-id={accountId}></c-show-my-payment-details>
         <br /><br />
         <template if:true={complaintsFound}>
             <div class="slds-text-heading_medium slds-text-align_center">Complaints</div>

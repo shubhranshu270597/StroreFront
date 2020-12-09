@@ -2,7 +2,7 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 12-01-2020
+  @last modified on  : 12-07-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
@@ -107,7 +107,7 @@
                                     <div class="slds-card__header slds-grid">
                                         <header class="slds-media slds-media_center slds-has-flexi-truncate">
                                             <div class="slds-media__figure">
-                                                <span class="slds-avatar">
+                                                <span class="slds-avatar slds-avatar_large">
                                                     <img alt={prod.Product2.Name} src={prod.Product2.Image_URL__c}
                                                         title={prod.Product2.Name} class="img-height" />
                                                 </span>
@@ -375,6 +375,38 @@
               <footer class="slds-modal__footer">
                 <button class="slds-button slds-button_neutral" onclick={closeModalForPayment}>Cancel</button>
                 <button class="slds-button slds-button_brand" onclick={closeModalForPayment}>OK</button>
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={updateEmailMobileSection}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+              <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                  <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-03" class="slds-modal__title slds-hyphenate">StoreFront Update User Info</h2>
+              </header>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                <p><b>It seems to be your email &amp; mobile not in our system currently, please fill your details.</b></p>
+                
+                <div class="slds-p-around_medium lgc-bg">
+                    <lightning-input type="text" data-name="customerEmail" label="Enter your email" placeholder="xxx@gmail.com" required onchange={handleuserUpdateInfo}></lightning-input>
+                </div>
+                <div class="slds-p-around_medium lgc-bg">
+                    <lightning-input type="text" data-name="customerMobile" label="Enter your mobile" placeholder="9566XXXXXX" required onchange={handleuserUpdateInfo}></lightning-input>
+                </div>
+                <i><b>Note: Your email &amp; mobile should be active as this details will be used in our system for further communication.</b></i>
+              </div>
+              <footer class="slds-modal__footer">
+                <!-- <button class="slds-button slds-button_neutral" onclick={closeModalForUpdateDetails}>Cancel</button> -->
+                <button class="slds-button slds-button_brand" onclick={saveCustomerDetails}>Update</button>
               </footer>
             </div>
           </section>
