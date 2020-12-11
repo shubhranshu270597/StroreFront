@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 12-09-2020
+ * @last modified on  : 12-10-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -10,15 +10,15 @@
 **/
 public without sharing class StoreFrontController {
     
-    public static String payment_id {get;set;}
-    public static String payment_request_id {get;set;}
-    public static String cust_id {get;set;}
+    // public static String payment_id {get;set;}
+    // public static String payment_request_id {get;set;}
+    // public static String cust_id {get;set;}
     
-    public StoreFrontController(){
-        payment_id = '';
-        payment_request_id ='';
-        cust_id = '';
-    }
+    // public StoreFrontController(){
+    //     payment_id = '';
+    //     payment_request_id ='';
+    //     cust_id = '';
+    // }
     @AuraEnabled(Cacheable = true)  
     public static Account getCustomerData(String recordId) {
     
@@ -299,7 +299,7 @@ public without sharing class StoreFrontController {
     }
 
     @AuraEnabled
-    public static string savePayment(String paymentRequestId){
+    public static string savePayment(String paymentRequestId, String paymentId,String recordId){
         String strresult = '';
 
         String apiKey=System.Label.InstamojoApiKey;
@@ -308,30 +308,30 @@ public without sharing class StoreFrontController {
         HttpResponse resp=new HttpResponse();
         Http http=new Http();
         
-        req.setEndpoint('https://test.instamojo.com/api/1.1/payment-requests/'+paymentRequestId);
+        req.setEndpoint('https://test.instamojo.com/api/1.1/payments/'+paymentId+'/');
         req.setMethod('GET');
         req.setHeader('X-Api-Key', apiKey);
         req.setHeader('X-Auth-Token', authtoken);
-        req.setHeader('content-type', 'application/x-www-form-urlencoded');
-        req.setBody(''); 
+        // req.setHeader('content-type', 'application/x-www-form-urlencoded');
+        // req.setBody(''); 
         System.debug(req);
         
         String result='';
         
         resp = http.send(req);
         Integer statusCode = resp.getStatusCode();                  
-        if(statusCode == 201 || statusCode == 200){
+        if(statusCode == 200){
             result = resp.getBody();
             System.debug('result --->'+result );
             Map<String,Object> mapOfResponseParameters = (Map<String,Object>)Json.deserializeuntyped(result);
-            Map<String,Object> mapOfPaymentResponse =(Map<String,Object>)mapOfResponseParameters.get('payment_request');
+            Map<String,Object> mapOfPaymentResponse =(Map<String,Object>)mapOfResponseParameters.get('payment');
             String paymentRequest=String.valueOf(mapOfResponseParameters.get('success'));
             System.debug('paymentRequest-->'+paymentRequest);
             System.debug('mapOfResponseParameters -->'+mapOfResponseParameters);
             System.debug('mapOfPaymentResponse -->'+mapOfPaymentResponse);  
             if(paymentRequest == 'true' && !mapOfPaymentResponse.isEmpty()){
-                String emailId = String.valueOf(mapOfPaymentResponse.get('email'));
-                String MobilePhone = String.valueOf(mapOfPaymentResponse.get('phone'));
+                String emailId = String.valueOf(mapOfPaymentResponse.get('buyer_email'));
+                String MobilePhone = String.valueOf(mapOfPaymentResponse.get('buyer_phone'));
                 MobilePhone = MobilePhone.replace('+91','');
                 List<Account> lstacc = [SELECT Id,Email_Id__c,MobilePhone__c from Account Where Email_Id__c=:emailId and MobilePhone__c=:MobilePhone order by CreatedDate desc LIMIT 1];
                 List<Payment__c> lstPay = [SELECT Id,Account__c,Payment_Id__c,Payment_request_id__c,Payment_Status__c,Status__c from Payment__c Where Payment_request_id__c =:paymentRequestId order by CreatedDate desc LIMIT 1];
@@ -341,16 +341,15 @@ public without sharing class StoreFrontController {
                     payment.Account__c = lstacc[0].Id;
                     payment.User_Email__c = lstacc[0].Email_Id__c;
                     payment.Amount__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    // payment.Currency__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    // payment.fees__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('longurl'));
+                    payment.Currency__c = String.valueOf(mapOfPaymentResponse.get('currency'));
+                    payment.fees__c = String.valueOf(mapOfPaymentResponse.get('fees'));
+                    payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('payment_request'));
                     // payment.Mac_Id__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
-                    // payment.Payment_Id__c = payment_id;
-                    payment.Payment_request_id__c = String.valueOf(mapOfPaymentResponse.get('id'));
-                    
-                    payment.Payment_Status__c = status =='Completed' ? 'Payment Made' : 'Transaction Failed'; 
-                    payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
+                    // payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
+                    payment.Payment_Id__c = String.valueOf(mapOfPaymentResponse.get('payment_id'));
+                    payment.Payment_request_id__c = paymentRequestId;
+                    payment.Payment_Status__c = status == 'Credit' ? 'Payment Made' : 'Transaction Failed'; 
+                    // payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
                     payment.Status__c = status;
     
                     try {
@@ -361,7 +360,7 @@ public without sharing class StoreFrontController {
                     }
                 }else if(lstacc.size()>0 && lstPay.size()> 0){
                     lstPay[0].Status__c = status;
-                    lstPay[0].Payment_Status__c = status == 'Completed' ? 'Payment Made' : 'Transaction Failed';
+                    lstPay[0].Payment_Status__c = status == 'Credit' ? 'Payment Made' : 'Transaction Failed';
     
                     try {
                         update lstPay;  
@@ -376,88 +375,102 @@ public without sharing class StoreFrontController {
             System.debug('result --->'+result );
         }
         
+
+        // List<Payment__c> lstPay = [SELECT Id,Account__c,Payment_Id__c,Payment_request_id__c,Payment_Status__c,Status__c from Payment__c Where Payment_request_id__c =:paymentRequestId and Account__c=:recordId order by CreatedDate desc LIMIT 1];
+        // if(lstPay.size()> 0){
+        //     lstPay[0].Status__c = 'Credit';
+        //     lstPay[0].Payment_Status__c = 'Payment Made';
+        //     lstPay[0].Payment_Id__c = paymentId;
+
+        //     try {
+        //         update lstPay;  
+        //         strresult = 'Payment Updated successfully';
+        //     } catch (DMLException e) {
+        //         System.debug('Error '+e.getMessage());
+        //     }
+        // }
         return strresult;
     }
 
-    public static void savePaymentafterResponse(){
-        //String strresult = '';
+    // public static void savePaymentafterResponse(){
+    //     //String strresult = '';
 
-        String apiKey=System.Label.InstamojoApiKey;
-        String authtoken=System.label.InstamojoAuthToken;
-        HttpRequest req=new HttpRequest();
-        HttpResponse resp=new HttpResponse();
-        Http http=new Http();
+    //     String apiKey=System.Label.InstamojoApiKey;
+    //     String authtoken=System.label.InstamojoAuthToken;
+    //     HttpRequest req=new HttpRequest();
+    //     HttpResponse resp=new HttpResponse();
+    //     Http http=new Http();
         
-        req.setEndpoint('https://test.instamojo.com/api/1.1/payment-requests/'+payment_request_id);
-        req.setMethod('GET');
-        req.setHeader('X-Api-Key', apiKey);
-        req.setHeader('X-Auth-Token', authtoken);
-        req.setHeader('content-type', 'application/x-www-form-urlencoded');
-        req.setBody(''); 
-        System.debug(req);
+    //     req.setEndpoint('https://test.instamojo.com/api/1.1/payment-requests/'+payment_request_id);
+    //     req.setMethod('GET');
+    //     req.setHeader('X-Api-Key', apiKey);
+    //     req.setHeader('X-Auth-Token', authtoken);
+    //     req.setHeader('content-type', 'application/x-www-form-urlencoded');
+    //     req.setBody(''); 
+    //     System.debug(req);
         
-        String result='';
+    //     String result='';
         
-        resp = http.send(req);
-        Integer statusCode = resp.getStatusCode();                  
-        if(statusCode == 201 || statusCode == 200){
-            result = resp.getBody();
-            System.debug('result --->'+result );
-            Map<String,Object> mapOfResponseParameters = (Map<String,Object>)Json.deserializeuntyped(result);
-            Map<String,Object> mapOfPaymentResponse =(Map<String,Object>)mapOfResponseParameters.get('payment_request');
-            String paymentRequest=String.valueOf(mapOfResponseParameters.get('success'));
-            System.debug('paymentRequest-->'+paymentRequest);
-            System.debug('mapOfResponseParameters -->'+mapOfResponseParameters);
-            System.debug('mapOfPaymentResponse -->'+mapOfPaymentResponse);  
-            if(paymentRequest == 'true' && !mapOfPaymentResponse.isEmpty()){
-                String emailId = String.valueOf(mapOfPaymentResponse.get('email'));
-                String MobilePhone = String.valueOf(mapOfPaymentResponse.get('phone'));
-                MobilePhone = MobilePhone.replace('+91','');
-                List<Account> lstacc = [SELECT Id,Email_Id__c,MobilePhone__c from Account Where Email_Id__c=:emailId and MobilePhone__c=:MobilePhone order by CreatedDate desc LIMIT 1];
-                List<Payment__c> lstPay = [SELECT Id,Account__c,Payment_Id__c,Payment_request_id__c,Payment_Status__c,Status__c from Payment__c Where Payment_request_id__c =:payment_request_id order by CreatedDate desc LIMIT 1];
-                String status = String.valueOf(mapOfPaymentResponse.get('status'));
-                if(lstacc.size()>0 && lstPay.size() == 0){
-                    Payment__c payment = new Payment__c();
-                    payment.Account__c = lstacc[0].Id;
-                    payment.User_Email__c = lstacc[0].Email_Id__c;
-                    payment.Amount__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    // payment.Currency__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    // payment.fees__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('longurl'));
-                    // payment.Mac_Id__c = String.valueOf(mapOfPaymentResponse.get('amount'));
-                    payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
-                    payment.Payment_Id__c = payment_id;
-                    payment.Payment_request_id__c = String.valueOf(mapOfPaymentResponse.get('id'));
+    //     resp = http.send(req);
+    //     Integer statusCode = resp.getStatusCode();                  
+    //     if(statusCode == 201 || statusCode == 200){
+    //         result = resp.getBody();
+    //         System.debug('result --->'+result );
+    //         Map<String,Object> mapOfResponseParameters = (Map<String,Object>)Json.deserializeuntyped(result);
+    //         Map<String,Object> mapOfPaymentResponse =(Map<String,Object>)mapOfResponseParameters.get('payment_request');
+    //         String paymentRequest=String.valueOf(mapOfResponseParameters.get('success'));
+    //         System.debug('paymentRequest-->'+paymentRequest);
+    //         System.debug('mapOfResponseParameters -->'+mapOfResponseParameters);
+    //         System.debug('mapOfPaymentResponse -->'+mapOfPaymentResponse);  
+    //         if(paymentRequest == 'true' && !mapOfPaymentResponse.isEmpty()){
+    //             String emailId = String.valueOf(mapOfPaymentResponse.get('email'));
+    //             String MobilePhone = String.valueOf(mapOfPaymentResponse.get('phone'));
+    //             MobilePhone = MobilePhone.replace('+91','');
+    //             List<Account> lstacc = [SELECT Id,Email_Id__c,MobilePhone__c from Account Where Email_Id__c=:emailId and MobilePhone__c=:MobilePhone order by CreatedDate desc LIMIT 1];
+    //             List<Payment__c> lstPay = [SELECT Id,Account__c,Payment_Id__c,Payment_request_id__c,Payment_Status__c,Status__c from Payment__c Where Payment_request_id__c =:payment_request_id order by CreatedDate desc LIMIT 1];
+    //             String status = String.valueOf(mapOfPaymentResponse.get('status'));
+    //             if(lstacc.size()>0 && lstPay.size() == 0){
+    //                 Payment__c payment = new Payment__c();
+    //                 payment.Account__c = lstacc[0].Id;
+    //                 payment.User_Email__c = lstacc[0].Email_Id__c;
+    //                 payment.Amount__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+    //                 // payment.Currency__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+    //                 // payment.fees__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+    //                 payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('longurl'));
+    //                 // payment.Mac_Id__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+    //                 payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
+    //                 payment.Payment_Id__c = payment_id;
+    //                 payment.Payment_request_id__c = String.valueOf(mapOfPaymentResponse.get('id'));
                     
-                    payment.Payment_Status__c = status =='Completed' ? 'Payment Made' : 'Transaction Failed'; 
-                    payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
-                    payment.Status__c = status;
+    //                 payment.Payment_Status__c = status =='Completed' ? 'Payment Made' : 'Transaction Failed'; 
+    //                 payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
+    //                 payment.Status__c = status;
     
-                    try {
-                        insert payment;
-                        //strresult = 'Payment Inseted successfully';
-                    } catch (DMLException e) {
-                        System.debug('Error '+e.getMessage());   
-                    }
-                }else if(lstacc.size()>0 && lstPay.size()> 0){
-                    lstPay[0].Status__c = status;
-                    lstPay[0].Payment_Status__c = status == 'Completed' ? 'Payment Made' : 'Transaction Failed';
+    //                 try {
+    //                     insert payment;
+    //                     //strresult = 'Payment Inseted successfully';
+    //                 } catch (DMLException e) {
+    //                     System.debug('Error '+e.getMessage());   
+    //                 }
+    //             }else if(lstacc.size()>0 && lstPay.size()> 0){
+    //                 lstPay[0].Status__c = status;
+    //                 lstPay[0].Payment_Status__c = status == 'Completed' ? 'Payment Made' : 'Transaction Failed';
     
-                    try {
-                        update lstPay;  
-                        //strresult = 'Payment Updated successfully';
-                    } catch (DMLException e) {
-                        System.debug('Error '+e.getMessage());
-                    }
-                }
-            }
-        }else{
-            result = resp.getBody();
-            System.debug('result --->'+result );
-        }
+    //                 try {
+    //                     update lstPay;  
+    //                     //strresult = 'Payment Updated successfully';
+    //                 } catch (DMLException e) {
+    //                     System.debug('Error '+e.getMessage());
+    //                 }
+    //             }
+    //         }
+    //     }else{
+    //         result = resp.getBody();
+    //         System.debug('result --->'+result );
+    //     }
         
-        //return strresult;
-    }
+    //     //return strresult;
+    // }
 
     @AuraEnabled
     public static String getQueryAllFieldSql(String SObjectAPIName,String conditionString,String relatedField){

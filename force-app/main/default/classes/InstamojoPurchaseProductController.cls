@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 12-07-2020
+ * @last modified on  : 12-10-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -36,6 +36,15 @@ global class InstamojoPurchaseProductController {
         String authtoken=System.label.InstamojoAuthToken;
         String redirectURL=System.label.redirectURL;
         String webhookAPI=System.label.InstamojoWebhookAPI;
+        // String salt = Purpose+'|'+Amount;
+        // System.debug('salt value '+salt);
+        // String key = System.Label.AESKey;
+        // Blob cryptoKey = EncodingUtil.base64Decode(key);
+        // Blob data = Blob.valueOf(salt); 
+        // Blob encryptedData = Crypto.encryptWithManagedIV('AES128', cryptoKey, data ); 
+        // string b64Data  = EncodingUtil.convertToHex(encryptedData);
+        // System.debug('b64Data ==>'+ b64Data);
+        // recordId = recordId +'_'+b64Data;
         redirectURL = redirectURL + recordId;
         String Poststring = 'amount=' + Amount +  '&purpose=' + Purpose +  '&buyer_name=' + buyer_name + '&email=' + email +  '&phone=' + phone +  '&redirect_url=' + redirectURL +  '&allow_repeated_payments=false&send_email=true&send_sms=true&webhook='+webhookAPI;
         System.debug('Poststring-->'+Poststring);
@@ -75,7 +84,49 @@ global class InstamojoPurchaseProductController {
                         String paymentId=String.valueOf(mapOfPaymentResponse.get('id'));
                         status=String.valueOf(mapOfPaymentResponse.get('status'));
                         String EmailStatus=String.valueOf(mapOfPaymentResponse.get('email_status'));
-                        System.debug('url-->'+url+' status '+status + ' paymentId '+paymentId);
+                        System.debug('url-->'+url+' status '+status + ' paymentId '+paymentId+' recordId '+recordId+' email '+email+' phone '+phone);
+                        recordId = recordId.trim();
+                        // List<Account> lstacc = [SELECT Id,Email_Id__c,MobilePhone__c from Account Where Id=:recordId LIMIT 1];
+                        // System.debug('lstacc '+lstacc);
+                        // if(lstacc.size()>0){
+                                
+                        //     Payment__c payment = new Payment__c();
+                        //     payment.Account__c = lstacc[0].Id;
+                        //     payment.User_Email__c = email;
+                        //     payment.Amount__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+                        //     payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('longurl'));
+                        //     payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
+                        //     payment.Payment_request_id__c = String.valueOf(mapOfPaymentResponse.get('id'));
+                        //     payment.Payment_Status__c = status =='Pending' ? 'Payment Initiated' : 'Transaction Failed'; 
+                        //     payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
+                        //     payment.Status__c = status;
+            
+                        //     try {
+                        //         insert payment;
+                        //         System.debug('Payment Inseted successfully');
+                        //     } catch (DMLException e) {
+                        //         System.debug('Error '+e.getMessage());   
+                        //     }
+                        // }else{
+                        //     System.debug('Account not found');
+                        // }
+                        // Payment__c payment = new Payment__c();
+                        // payment.Account__c = recordId;
+                        // payment.User_Email__c = email;
+                        // payment.Amount__c = String.valueOf(mapOfPaymentResponse.get('amount'));
+                        // payment.Longurl__c = String.valueOf(mapOfPaymentResponse.get('longurl'));
+                        // payment.Payment_For__c = String.valueOf(mapOfPaymentResponse.get('purpose'));
+                        // payment.Payment_request_id__c = String.valueOf(mapOfPaymentResponse.get('id'));
+                        // payment.Payment_Status__c = status =='Pending' ? 'Payment Initiated' : 'Transaction Failed'; 
+                        // payment.Short_Url__c = String.valueOf(mapOfPaymentResponse.get('shorturl'));
+                        // payment.Status__c = status;
+        
+                        // try {
+                        //     insert payment;
+                        //     System.debug('Payment Inseted successfully');
+                        // } catch (DMLException e) {
+                        //     System.debug('Error '+e.getMessage());   
+                        // }
                         return url;
                     }
                     // else{

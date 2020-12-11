@@ -443,27 +443,9 @@ export default class StoreFrontMasterComponent extends LightningElement {
     }
 
     callGetPaymentDetails(){
-        // let request = new XMLHttpRequest();
-        // request.open("GET","https://test.instamojo.com/api/1.1/payment-requests/"+this.paymentRequestId);
-        // request.setRequestHeader('Access-Control-Allow-Origin', '*');
-        // request.setRequestHeader('X-Api-Key', 'test_b91292eafe8832a7a2c484f126e');
-        // request.setRequestHeader('X-Auth-Token', 'test_5d34da6167ad9beaf76dc0ce3ec');
-        // request.send();
-        // request.onload = () => {
-        //     console.log(request);
-        //     if(request.status === 200){
-        //         let paymentData = JSON.parse(request.response);
-        //         console.log(JSON.stringify(paymentData));
-        //     }else{
-        //         console.log(`error ${request.status} ${request.statusText}`)
-        //         this.showHtmlMessage('Error!', request.status +' '+request.statusText, 'error');
-                
-        //     }
-        // }
-
         if(this.paymentRequestId){
                 
-            savePayment({ paymentRequestId: this.paymentRequestId})
+            savePayment({ paymentRequestId: this.paymentRequestId, paymentId: this.paymentId, recordId: this.recordId})
             .then((result) => {
                 if (result != null) {
                     this.message = result;

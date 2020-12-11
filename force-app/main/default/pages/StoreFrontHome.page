@@ -2,23 +2,16 @@
   @description       : 
   @author            : shubhranshu
   @group             : 
-  @last modified on  : 12-09-2020
+  @last modified on  : 12-10-2020
   @last modified by  : shubhranshu
   Modifications Log 
   Ver   Date         Author        Modification
-  1.0   10-27-2020   shubhranshu   Initial Version
+  1.0   12-10-2020   shubhranshu   Initial Version
 -->
-<apex:page standardStylesheets="false" showHeader="false" sidebar="false" controller="StoreFrontController">
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false">
     <apex:includeLightning />
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <body style="background-image: url(https://prod-eduvanz-bucket.s3.ap-south-1.amazonaws.com/eduvanz-portal/assets/img/new-dark-bg2.png);">
     <div id="lightning"></div>
-    <apex:form id="formid">
-        <apex:actionFunction name="saveDetails" action="{!savePaymentafterResponse}" />
-        <apex:inputHidden  id="paymentid" value="{!payment_id}" />
-        <apex:inputHidden id="paymentrequestid" value="{!payment_request_id}" />
-        <apex:inputHidden id="custid" value="{!cust_id}" />
-      </apex:form>
     <script>
         function getQueryParameters() {
             let params = {};
@@ -33,26 +26,7 @@
 
         var params = getQueryParameters();
         console.log('params ' + JSON.stringify(params));
-        $(document).ready(function(){
 
-            console.log('params inside jquery ' + JSON.stringify(params));
-            if(params.payment_id){
-                $('[id$=paymentid]').val(params.payment_id);
-            }
-            if(params.payment_request_id){
-                $('[id$=paymentrequestid]').val(params.payment_request_id);
-            }
-            if(params.id){
-                $('[id$=custid]').val(params.id);
-            }
-            
-            if(params.payment_id && params.payment_request_id && params.id){
-                console.log('called...');
-                saveDetails();
-            }else{
-                console.log('not called...');
-            }
-        });
         $Lightning.use("c:StoreFrontMasterApp" , function(){
             $Lightning.createComponent("c:storeFrontMasterComponent" ,{ parameters: params },
             "lightning",
