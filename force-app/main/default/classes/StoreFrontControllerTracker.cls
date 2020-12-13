@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 11-10-2020
+ * @last modified on  : 12-11-2020
  * @last modified by  : shubhranshu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -106,6 +106,36 @@ public class StoreFrontControllerTracker {
         pbundle.Expire_Date__c = Date.today().addYears(1);
         pbundle.Products__c = 'test for dummy test for dummy test for dummy test for dummy test for dummy ';
         insert pbundle;
+
+        Payment__c payment = new Payment__c();
+        payment.Account__c = acc.Id;
+        payment.User_Email__c = acc.Email_Id__c;
+        payment.Amount__c = '2520.23';
+        payment.Currency__c = 'INR';
+        payment.fees__c = '0.25';
+        payment.Longurl__c = 'https://test.instamojo.com/getpay/01545154sdvfsgvsjfas8dsa';
+        payment.Payment_For__c = 'Anti virus App';
+        payment.Payment_Id__c = 'MOJO0c10J05A80855523';
+        payment.Payment_request_id__c = '01545154sdvfsgvsjfas8dsa';
+        payment.Payment_Status__c = 'Payment Made'; 
+        payment.Status__c = 'Credit';
+        
+        insert payment;
+    }
+
+    private class getPaymentsMock implements HttpCalloutMock {
+        public Integer statusCode;
+        getPaymentsMock(){
+            statusCode = 200;
+        }
+        public HTTPResponse respond(HTTPRequest req) {
+            String fullJson = '{"success":true,"payment":{"payment_id":"MOJO0c10J05A80855523","status":"Credit","currency":"INR","amount":"7312.00","buyer_name":"Shubhranshu Panda","buyer_phone":"+919967780904","buyer_email":"shuboy345@gmail.com","shipping_address":null,"shipping_city":null,"shipping_state":null,"shipping_zip":null,"shipping_country":null,"quantity":1,"unit_price":"7312.00","fees":"138.93","variants":[],"custom_fields":{},"affiliate_commission":"0","payment_request":"https://test.instamojo.com/api/1.1/payment-requests/12e623c60d1d4d5c847e629c2fc2fd08/","instrument_type":"CARD","billing_instrument":"International Regular Credit Card (Visa/Mastercard)","tax_invoice_id":"","failure":null,"payout":null,"created_at":"2020-12-10T08:19:53.941915Z"}}';
+            HTTPResponse res = new HTTPResponse();
+            res.setHeader('Content-Type', 'application/json');
+            res.setBody(fullJson);
+            res.setStatusCode(200);
+            return res;
+        }
     }
 
     static testMethod void testgetCustomerData(){
@@ -213,4 +243,26 @@ public class StoreFrontControllerTracker {
         Test.stopTest();
     }
 
+    static testMethod void testgetPayments(){
+        Account acc = [Select Id,User_Name__c,Password__c from Account LIMIT 1];
+        Test.startTest();     
+        StoreFrontController.getPayments(acc.Id);
+        Test.stopTest();
+    }
+    static testMethod void testupdateCutsomerDetails(){
+        Account acc = [Select Id,User_Name__c,Password__c from Account LIMIT 1];
+        Test.startTest();     
+        StoreFrontController.updateCutsomerDetails(acc.Id,'test@gmail.com','888000001');
+        Test.stopTest();
+    }
+
+    static testmethod void testsavePayment(){
+        Account acc = [Select Id,User_Name__c,Password__c from Account LIMIT 1];
+        Payment__c pay = [Select Id,Payment_Id__c,Payment_request_id__c from Payment__c LIMIT 1];
+        Test.startTest();
+        getPaymentsMock rest = new getPaymentsMock();
+        Test.setMock(HttpCalloutMock.class,rest );
+        StoreFrontController.savePayment('test', 'test',acc.Id);
+        Test.stopTest();
+    }
 }

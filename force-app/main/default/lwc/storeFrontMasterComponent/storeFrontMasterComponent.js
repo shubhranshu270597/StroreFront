@@ -313,7 +313,8 @@ export default class StoreFrontMasterComponent extends LightningElement {
                     this.error = undefined;
                     console.log("result", this.message);
                     if(this.message === 'success'){
-                        this.showHtmlMessage('Customer Info updated successfully!', this.message, 'success');   
+                        this.showHtmlMessage('Customer Info updated successfully!', this.message, 'success');
+                        window.location.reload();  
                     }
                     this.updateEmailMobileSection = !this.updateEmailMobileSection;
                 }
